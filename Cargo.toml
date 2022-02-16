@@ -1,0 +1,20 @@
+[package]
+name = "exchange-extractor"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+# Web Scrapping
+tokio = { version = "1.0", features = ["rt-multi-thread", "macros", "sync", "time"] }
+reqwest = { version = "0.11", features = ["json"] }
+url = "2.2.2"
+serde = { version = "1.0", features = ["derive"] }
+futures = "0.3"
+# Scheduler
+tokio-cron-scheduler = "0.3.1"
+# Misc
+chrono = "0.4"
+# Get config file
+# config = { version = "0.11", default-features = false, features = ["yaml"] }
