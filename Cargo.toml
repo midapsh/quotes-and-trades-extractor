@@ -5,16 +5,32 @@ edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+
 [dependencies]
-# Web Scrapping
-tokio = { version = "1.0", features = ["rt-multi-thread", "macros", "sync", "time"] }
-reqwest = { version = "0.11", features = ["json"] }
-url = "2.2.2"
+tokio = { version = "1.0", features = ["rt-multi-thread", "macros", "sync", "time", "fs"] }
 serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+tokio-tungstenite = {version = "0.16", features = ["stream", "default", "connect", "native-tls", "native-tls-vendored", "rustls-tls-native-roots", "rustls-tls-webpki-roots", "__rustls-tls"]}
+hyper = "0.14"
+thiserror = "1.0"
+async-trait = "0.1"
 futures = "0.3"
-# Scheduler
-tokio-cron-scheduler = "0.3.1"
-# Misc
-chrono = "0.4"
-# Get config file
-# config = { version = "0.11", default-features = false, features = ["yaml"] }
+##################
+# CoinBase
+# coinbase-pro-rs = "0.7.1"
+# tokio = { version = "1.0.2", features = ["full"] }
+# futures = "0.3.8"
+##################
+# # Scheduler
+# # Web Scrapping
+# tokio = { version = "1.0", features = ["rt-multi-thread", "macros", "sync", "time"] }
+# reqwest = { version = "0.11", features = ["json"] }
+# url = "2.2.2"
+# serde = { version = "1.0", features = ["derive"] }
+# futures = "0.3"
+# # Scheduler
+# tokio-cron-scheduler = "0.3.1"
+# # Misc
+# chrono = "0.4"
+# # Get config file
+# # config = { version = "0.11", default-features = false, features = ["yaml"] }

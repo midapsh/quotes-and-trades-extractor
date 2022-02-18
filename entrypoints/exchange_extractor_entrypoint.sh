@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 set -e
 
-/opt/exchange-extractor/target/release/exchange-extractor
+/home/hspadim/Documents/Rust/exchange-extractor/target/release/exchange-extractor
