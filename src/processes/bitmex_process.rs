@@ -2,20 +2,21 @@ use futures::TryStreamExt;
 use tokio::fs::OpenOptions;
 use tokio::io::AsyncWriteExt; // for write_all()
 
-use crate::commands::coinbase_subscribe::ChannelType;
-use crate::data_extractors::coinbase_websocket::CoinbaseWebsocket;
+use crate::commands::bitmex_subscribe::Args;
+use crate::data_extractors::bitmex_websocket::BitmexWebsocket;
 
-pub async fn coinbase_process() {
-    let stream = CoinbaseWebsocket::connect(ChannelType::Level2, vec![String::from("BTC-USD")])
-        .await
-        .unwrap();
+pub async fn bitmex_process() {
+    let stream =
+        BitmexWebsocket::connect(Args::WithProduct(vec![String::from("orderBookL2:XBTUSD")]))
+            .await
+            .unwrap();
 
     stream
         .try_for_each(|msg| async {
             let mut file = OpenOptions::new()
                 .append(true)
                 .create(true)
-                .open("coinbase.log")
+                .open("bitmex.log")
                 .await?;
             match msg {
                 tokio_tungstenite::tungstenite::Message::Text(message) => {

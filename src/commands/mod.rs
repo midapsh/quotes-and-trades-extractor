@@ -1,1 +1,2 @@
-pub mod subscribe;
+pub mod bitmex_subscribe;
+pub mod coinbase_subscribe;

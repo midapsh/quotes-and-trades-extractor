@@ -3,32 +3,28 @@ use futures::SinkExt;
 // use tokio_tungstenite::tungstenite::stream::MaybeTlsStream;
 use tokio_tungstenite::{connect_async, tungstenite::Message as TMessage, WebSocketStream};
 
-// use super::errors::coinbase_errors::CBError;
+// use super::errors::bitmex_errors::CBError;
 // use crate::errors::websocket_errors::WSError;
 
 // use tokio_tungstenite::connect_async;
 
-pub struct CoinbaseWebsocket;
+pub struct BitmexWebsocket;
 
-use crate::commands::coinbase_subscribe::{Channel, ChannelType, Subscribe, SubscribeCmd};
+use crate::commands::bitmex_subscribe::{Args, Subscribe, SubscribeCmd};
 
-impl CoinbaseWebsocket {
-    const URL: &'static str = "wss://ws-feed-public.sandbox.pro.coinbase.com";
+impl BitmexWebsocket {
+    const URL: &'static str = "wss://www.bitmex.com/realtime";
 
-    /// Constructor for simple subcription with product_ids and channels
+    /// Constructor for simple subcription with product_ids and args
     pub async fn connect(
-        channel: ChannelType,
-        products_ids: Vec<String>,
+        args: Args,
     ) -> core::result::Result<
         WebSocketStream<tokio_tungstenite::MaybeTlsStream<tokio::net::TcpStream>>,
         tokio_tungstenite::tungstenite::error::Error,
     > {
         let subscribe = Subscribe {
             _type: SubscribeCmd::Subscribe,
-            channels: vec![Channel::WithProduct {
-                channel,
-                products_ids,
-            }],
+            args: args,
         };
 
         Self::connect_with_sub(subscribe).await

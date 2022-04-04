@@ -9,6 +9,10 @@ edition = "2021"
 name = "coinbase"
 path = "src/coinbase.rs"
 
+[[bin]]
+name = "bitmex"
+path = "src/bitmex.rs"
+
 [dependencies]
 tokio = { version = "1.0", features = ["rt-multi-thread", "macros", "sync", "time", "fs"] }
 serde = { version = "1.0", features = ["derive"] }
