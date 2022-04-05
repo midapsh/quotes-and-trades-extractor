@@ -21,8 +21,21 @@ cargo check
 cargo build --release
 
 # Systemd things
-sudo systemctl enable "$PROJECT_HOWTO_TCS_HOME/services/exchange-extractor.service"
+chmod a+x entrypoints/bitmex_entrypoint.sh
+sudo systemctl enable "/opt/exchange-extractor/services/bitmex-extractor.service"
 sudo systemctl daemon-reload
-sudo systemctl start exchange-extractor
+sudo systemctl start bitmex-extractor
+
+chmod a+x entrypoints/coinbase_extractor_entrypoint.sh
+sudo systemctl enable "/opt/exchange-extractor/services/coinbase-extractor.service"
+sudo systemctl daemon-reload
+sudo systemctl start coinbase-extractor
+
+
+chmod a+x entrypoints/log_cpu_resources.sh
+sudo systemctl enable "/opt/exchange-extractor/services/log-cpu-resources.service"
+sudo systemctl daemon-reload
+sudo systemctl start log-cpu-resources
+
 popd
 popd

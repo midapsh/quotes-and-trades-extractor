@@ -1,5 +1,5 @@
 [Unit]
-Description=Exchange Extractor daemon
+Description=Coinbase Extractor daemon
 # Need this services (can start simultaneously)
 Wants=network.target
 # If the 'Wants' services don't work, this services won't work either
@@ -9,8 +9,8 @@ After=network.target
 
 [Service]
 Type=simple
-WorkingDirectory=/home/hspadim/Documents/Rust/exchange-extractor/entrypoints
-ExecStart=/home/hspadim/Documents/Rust/exchange-extractor/entrypoints/exchange_extractor_entrypoint.sh
+WorkingDirectory=/opt/exchange-extractor/entrypoints
+ExecStart=/opt/exchange-extractor/entrypoints/coinbase_extractor_entrypoint.sh
 Restart=on-failure
 RestartSec=5s
 
