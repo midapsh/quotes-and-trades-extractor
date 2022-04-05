@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 set -e
 
-/home/hspadim/Documents/Rust/exchange-extractor/target/release/coinbase
+/opt/exchange-extractor/target/release/coinbase

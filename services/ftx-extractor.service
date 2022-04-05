@@ -1,0 +1,18 @@
+[Unit]
+Description=FTX Extractor daemon
+# Need this services (can start simultaneously)
+Wants=network.target
+# If the 'Wants' services don't work, this services won't work either
+Requires=network.target
+# If 'Wants' services works, then start this service
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/exchange-extractor/entrypoints
+ExecStart=/opt/exchange-extractor/entrypoints/ftx_extractor_entrypoint.sh
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target
