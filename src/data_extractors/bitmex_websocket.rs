@@ -42,7 +42,7 @@ impl BitmexWebsocket {
 
         let subscribe = serde_json::to_string(&subscribe).unwrap();
         stream.send(TMessage::Text(subscribe)).await?;
-        println!("subsription sent");
+        println!("subscription sent");
 
         Ok(stream)
     }

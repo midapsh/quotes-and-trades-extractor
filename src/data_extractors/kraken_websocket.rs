@@ -48,7 +48,7 @@ impl KrakenWebsocket {
             .send(TMessage::Text("{\"op\": \"ping\"}".to_string()))
             .await?;
         stream.send(TMessage::Text(subscribe)).await?;
-        println!("subsription sent");
+        println!("subscription sent");
 
         Ok(stream)
     }

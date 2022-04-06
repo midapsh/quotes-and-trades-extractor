@@ -3,30 +3,30 @@ use futures::SinkExt;
 // use tokio_tungstenite::tungstenite::stream::MaybeTlsStream;
 use tokio_tungstenite::{connect_async, tungstenite::Message as TMessage, WebSocketStream};
 
-// use super::errors::ftx_errors::CBError;
+// use super::errors::deribit_errors::CBError;
 // use crate::errors::websocket_errors::WSError;
 
 // use tokio_tungstenite::connect_async;
 
-pub struct FTXWebsocket;
+pub struct DeribitWebsocket;
 
-use crate::commands::ftx_subscribe::{ArgsType, Product, Subscribe, SubscribeCmd};
+use crate::commands::deribit_subscribe::{Args, IdCmd, JsonRpc, MethodCmd, Subscribe};
 
-impl FTXWebsocket {
-    const URL: &'static str = "wss://ftx.com/ws/";
+impl DeribitWebsocket {
+    const URL: &'static str = "wss://test.deribit.com/ws/api/v2/";
 
     /// Constructor for simple subcription with product_ids and args
     pub async fn connect(
-        arg: ArgsType,
-        product: Product,
+        args: Args,
     ) -> core::result::Result<
         WebSocketStream<tokio_tungstenite::MaybeTlsStream<tokio::net::TcpStream>>,
         tokio_tungstenite::tungstenite::error::Error,
     > {
         let subscribe = Subscribe {
-            _type: SubscribeCmd::Subscribe,
-            arg,
-            product,
+            json_rpc: JsonRpc::Version("2.0".to_string()),
+            id: IdCmd::Id(1),
+            _type: MethodCmd::Subscribe,
+            args: args,
         };
         println!("{:?}", serde_json::to_string(&subscribe));
 
@@ -44,9 +44,9 @@ impl FTXWebsocket {
         println!("WebSocket handshake has been successfully completed");
 
         let subscribe = serde_json::to_string(&subscribe).unwrap();
-        stream
-            .send(TMessage::Text("{\"op\": \"ping\"}".to_string()))
-            .await?;
+        // stream
+        //     .send(TMessage::Text("{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"public/set_heartbeat\",\"params\":{\"interval\":15}}".to_string()))
+        //     .await?;
         stream.send(TMessage::Text(subscribe)).await?;
         println!("subscription sent");
 
