@@ -17,6 +17,11 @@ path = "src/bitmex.rs"
 name = "ftx"
 path = "src/ftx.rs"
 
+[[bin]]
+name = "kraken"
+path = "src/kraken.rs"
+
+
 [dependencies]
 tokio = { version = "1.0", features = ["rt-multi-thread", "macros", "sync", "time", "fs"] }
 serde = { version = "1.0", features = ["derive"] }

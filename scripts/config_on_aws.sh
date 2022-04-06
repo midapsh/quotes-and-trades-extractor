@@ -38,6 +38,14 @@ sudo systemctl start ftx-extractor
 sudo systemctl status ftx-extractor
 sudo systemctl stop ftx-extractor
 
+chmod a+x entrypoints/kraken_extractor_entrypoint.sh
+sudo systemctl enable "/opt/exchange-extractor/services/kraken-extractor.service"
+sudo systemctl daemon-reload
+sudo systemctl start kraken-extractor
+sudo systemctl status kraken-extractor
+sudo systemctl stop kraken-extractor
+
+
 
 chmod a+x entrypoints/log_cpu_resources.sh
 sudo systemctl enable "/opt/exchange-extractor/services/log-cpu-resources.service"
