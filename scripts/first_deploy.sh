@@ -31,6 +31,11 @@ sudo systemctl enable "/opt/exchange-extractor/services/coinbase-extractor.servi
 sudo systemctl daemon-reload
 sudo systemctl start coinbase-extractor
 
+chmod a+x entrypoints/deribit_extractor_entrypoint.sh
+sudo systemctl enable "/opt/exchange-extractor/services/deribit-extractor.service"
+sudo systemctl daemon-reload
+sudo systemctl start deribit-extractor
+
 chmod a+x entrypoints/ftx_extractor_entrypoint.sh
 sudo systemctl enable "/opt/exchange-extractor/services/ftx-extractor.service"
 sudo systemctl daemon-reload
