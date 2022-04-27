@@ -1,3 +1,4 @@
+pub mod binance_subscribe;
 pub mod bitmex_subscribe;
 pub mod coinbase_subscribe;
 pub mod deribit_subscribe;
