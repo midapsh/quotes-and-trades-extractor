@@ -29,6 +29,9 @@ path = "src/kraken.rs"
 name = "binance_spot"
 path = "src/binance_spot.rs"
 
+[[bin]]
+name = "binance_stable"
+path = "src/binance_stable.rs"
 
 [dependencies]
 tokio = { version = "1.0", features = ["rt-multi-thread", "macros", "sync", "time", "fs"] }

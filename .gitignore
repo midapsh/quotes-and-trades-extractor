@@ -5,5 +5,6 @@ deribit.log
 ftx.log
 kraken.log
 binance_spot.log
+binance_stable.log
 
 production.yaml

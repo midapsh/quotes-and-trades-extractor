@@ -1,4 +1,5 @@
 pub mod binance_spot_process;
+pub mod binance_stable_process;
 pub mod bitmex_process;
 pub mod coinbase_process;
 pub mod deribit_process;
