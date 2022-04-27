@@ -24,11 +24,13 @@ pub async fn deribit_process() {
             TMessage::Text(message) => {
                 if message.contains("test_request") {
                     write.send(TMessage::Text("{\"jsonrpc\": \"2.0\",\"id\": 0,\"method\": \"public/test\",\"params\": {}}".to_string())).await?
-                } else {
+                } else if message.contains("subscription") {
                     file.write_all(format!("{}\n", message).as_bytes()).await?
+                } else {
+                    println!("{}", message)
                 }
             }
-            _other => println!("other"),
+            _ => println!("other"),
         }
         Ok(write)
     })

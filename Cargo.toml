@@ -35,6 +35,8 @@ hyper = "0.14"
 thiserror = "1.0"
 async-trait = "0.1"
 futures = "0.3"
+# Configs
+config = { version = "0.11", default-features = false, features = ["yaml"] }
 ##################
 # CoinBase
 # coinbase-pro-rs = "0.7.1"

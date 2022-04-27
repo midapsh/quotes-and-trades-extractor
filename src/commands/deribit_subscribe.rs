@@ -14,7 +14,8 @@ pub struct Subscribe {
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub enum MethodCmd {
-    #[serde(rename = "public/subscribe")]
+    // #[serde(rename = "public/subscribe")]
+    #[serde(rename = "private/subscribe")]
     Subscribe,
     #[serde(rename = "public/set_heartbeat")]
     Heartbeat,

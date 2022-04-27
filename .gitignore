@@ -4,3 +4,5 @@ coinbase.log
 deribit.log
 ftx.log
 kraken.log
+
+production.yaml

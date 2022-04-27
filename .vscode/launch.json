@@ -7,15 +7,15 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug executable 'exchange-extractor'",
+            "name": "Debug executable 'coinbase'",
             "cargo": {
                 "args": [
                     "build",
-                    "--bin=exchange-extractor",
+                    "--bin=coinbase",
                     "--package=exchange-extractor"
                 ],
                 "filter": {
-                    "name": "exchange-extractor",
+                    "name": "coinbase",
                     "kind": "bin"
                 }
             },
@@ -25,16 +25,172 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug unit tests in executable 'exchange-extractor'",
+            "name": "Debug unit tests in executable 'coinbase'",
             "cargo": {
                 "args": [
                     "test",
                     "--no-run",
-                    "--bin=exchange-extractor",
+                    "--bin=coinbase",
                     "--package=exchange-extractor"
                 ],
                 "filter": {
-                    "name": "exchange-extractor",
+                    "name": "coinbase",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug executable 'bitmex'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--bin=bitmex",
+                    "--package=exchange-extractor"
+                ],
+                "filter": {
+                    "name": "bitmex",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in executable 'bitmex'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--bin=bitmex",
+                    "--package=exchange-extractor"
+                ],
+                "filter": {
+                    "name": "bitmex",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug executable 'deribit'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--bin=deribit",
+                    "--package=exchange-extractor"
+                ],
+                "filter": {
+                    "name": "deribit",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            // "envFile": "${workspaceFolder}/env/deribit.env",
+            "env": {
+                "APP_ENVIRONMENT": "production"
+            },
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in executable 'deribit'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--bin=deribit",
+                    "--package=exchange-extractor"
+                ],
+                "filter": {
+                    "name": "deribit",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            // "envFile": "${workspaceFolder}/env/deribit.env",
+            "env": {
+                "APP_ENVIRONMENT": "production"
+            },
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug executable 'ftx'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--bin=ftx",
+                    "--package=exchange-extractor"
+                ],
+                "filter": {
+                    "name": "ftx",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in executable 'ftx'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--bin=ftx",
+                    "--package=exchange-extractor"
+                ],
+                "filter": {
+                    "name": "ftx",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug executable 'kraken'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--bin=kraken",
+                    "--package=exchange-extractor"
+                ],
+                "filter": {
+                    "name": "kraken",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in executable 'kraken'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--bin=kraken",
+                    "--package=exchange-extractor"
+                ],
+                "filter": {
+                    "name": "kraken",
                     "kind": "bin"
                 }
             },
