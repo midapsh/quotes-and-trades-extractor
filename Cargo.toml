@@ -37,6 +37,10 @@ path = "src/binance_stable.rs"
 name = "binance_coin"
 path = "src/binance_coin.rs"
 
+[[bin]]
+name = "okx"
+path = "src/okx.rs"
+
 [dependencies]
 tokio = { version = "1.0", features = ["rt-multi-thread", "macros", "sync", "time", "fs"] }
 serde = { version = "1.0", features = ["derive"] }

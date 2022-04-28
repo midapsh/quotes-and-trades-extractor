@@ -7,5 +7,6 @@ kraken.log
 binance_spot.log
 binance_stable.log
 binance_coin.log
+okx.log
 
 production.yaml
