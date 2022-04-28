@@ -6,5 +6,6 @@ pub mod bitstamp_process;
 pub mod coinbase_process;
 pub mod deribit_process;
 pub mod ftx_process;
+pub mod kraken_futures_process;
 pub mod kraken_process;
 pub mod okx_process;

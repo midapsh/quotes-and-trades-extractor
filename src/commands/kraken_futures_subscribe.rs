@@ -1,0 +1,28 @@
+use serde::{Deserialize, Serialize};
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Subscribe {
+    #[serde(rename = "event")]
+    pub _type: SubscribeCmd,
+    pub product_ids: Vec<String>,
+    pub feed: FeedType,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
+pub enum SubscribeCmd {
+    Subscribe,
+}
+
+// Link: https://www.okx.com/docs/en/#websocket-api-public-channel-order-book-channel
+#[derive(Serialize, Deserialize, Debug)]
+pub enum FeedType {
+    // #[serde(rename = "candles")]
+    // Candles,
+    #[serde(rename = "book")]
+    Orderbook,
+    // #[serde(rename = "snapshot")]
+    // Snapshot,
+    // #[serde(rename = "trades")]
+    // Trades,
+}

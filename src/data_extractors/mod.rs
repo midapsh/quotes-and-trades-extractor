@@ -6,5 +6,6 @@ pub mod bitstamp_websocket;
 pub mod coinbase_websocket;
 pub mod deribit_websocket;
 pub mod ftx_websocket;
+pub mod kraken_futures_websocket;
 pub mod kraken_websocket;
 pub mod okx_websocket;

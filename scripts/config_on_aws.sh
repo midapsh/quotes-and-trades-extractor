@@ -82,6 +82,13 @@ sudo systemctl start kraken-extractor
 sudo systemctl status kraken-extractor
 sudo systemctl stop kraken-extractor
 
+chmod a+x entrypoints/kraken_futures_extractor_entrypoint.sh
+sudo systemctl enable "/opt/exchange-extractor/services/kraken-futures-extractor.service"
+sudo systemctl daemon-reload
+sudo systemctl start kraken-futures-extractor
+sudo systemctl status kraken-futures-extractor
+sudo systemctl stop kraken-futures-extractor
+
 chmod a+x entrypoints/okx_extractor_entrypoint.sh
 sudo systemctl enable "/opt/exchange-extractor/services/okx-extractor.service"
 sudo systemctl daemon-reload

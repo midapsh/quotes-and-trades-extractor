@@ -9,5 +9,6 @@ binance_stable.log
 binance_coin.log
 okx.log
 bitstamp.log
+kraken_futures.log
 
 production.yaml
