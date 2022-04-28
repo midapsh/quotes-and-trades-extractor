@@ -1,3 +1,4 @@
+pub mod binance_coin_websocket;
 pub mod binance_spot_websocket;
 pub mod binance_stable_websocket;
 pub mod bitmex_websocket;

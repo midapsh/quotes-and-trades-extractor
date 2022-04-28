@@ -33,6 +33,10 @@ path = "src/binance_spot.rs"
 name = "binance_stable"
 path = "src/binance_stable.rs"
 
+[[bin]]
+name = "binance_coin"
+path = "src/binance_coin.rs"
+
 [dependencies]
 tokio = { version = "1.0", features = ["rt-multi-thread", "macros", "sync", "time", "fs"] }
 serde = { version = "1.0", features = ["derive"] }

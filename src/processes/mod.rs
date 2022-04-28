@@ -1,3 +1,4 @@
+pub mod binance_coin_process;
 pub mod binance_spot_process;
 pub mod binance_stable_process;
 pub mod bitmex_process;
