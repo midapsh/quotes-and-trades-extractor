@@ -21,10 +21,30 @@ cargo check
 cargo build --release
 
 # Systemd things
-chmod a+x entrypoints/bitmex_entrypoint.sh
+chmod a+x entrypoints/binance_coin_extractor_entrypoint.sh
+sudo systemctl enable "/opt/exchange-extractor/services/binance_coin-extractor.service"
+sudo systemctl daemon-reload
+sudo systemctl start binance-coin-extractor
+
+chmod a+x entrypoints/binance_spot_extractor_entrypoint.sh
+sudo systemctl enable "/opt/exchange-extractor/services/binance_spot-extractor.service"
+sudo systemctl daemon-reload
+sudo systemctl start binance-spot-extractor
+
+chmod a+x entrypoints/binance_stable_extractor_entrypoint.sh
+sudo systemctl enable "/opt/exchange-extractor/services/binance_stable-extractor.service"
+sudo systemctl daemon-reload
+sudo systemctl start binance-stable-extractor
+
+chmod a+x entrypoints/bitmex_extractor_entrypoint.sh
 sudo systemctl enable "/opt/exchange-extractor/services/bitmex-extractor.service"
 sudo systemctl daemon-reload
 sudo systemctl start bitmex-extractor
+
+chmod a+x entrypoints/bitstamp_extractor_entrypoint.sh
+sudo systemctl enable "/opt/exchange-extractor/services/bitstamp-extractor.service"
+sudo systemctl daemon-reload
+sudo systemctl start bitstamp-extractor
 
 chmod a+x entrypoints/coinbase_extractor_entrypoint.sh
 sudo systemctl enable "/opt/exchange-extractor/services/coinbase-extractor.service"
@@ -45,6 +65,11 @@ chmod a+x entrypoints/kraken_extractor_entrypoint.sh
 sudo systemctl enable "/opt/exchange-extractor/services/kraken-extractor.service"
 sudo systemctl daemon-reload
 sudo systemctl start kraken-extractor
+
+chmod a+x entrypoints/okx_extractor_entrypoint.sh
+sudo systemctl enable "/opt/exchange-extractor/services/okx-extractor.service"
+sudo systemctl daemon-reload
+sudo systemctl start okx-extractor
 
 
 
