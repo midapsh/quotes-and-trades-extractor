@@ -8,5 +8,6 @@ binance_spot.log
 binance_stable.log
 binance_coin.log
 okx.log
+bitstamp.log
 
 production.yaml

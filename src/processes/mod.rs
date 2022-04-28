@@ -2,6 +2,7 @@ pub mod binance_coin_process;
 pub mod binance_spot_process;
 pub mod binance_stable_process;
 pub mod bitmex_process;
+pub mod bitstamp_process;
 pub mod coinbase_process;
 pub mod deribit_process;
 pub mod ftx_process;

@@ -41,6 +41,10 @@ path = "src/binance_coin.rs"
 name = "okx"
 path = "src/okx.rs"
 
+[[bin]]
+name = "bitstamp"
+path = "src/bitstamp.rs"
+
 [dependencies]
 tokio = { version = "1.0", features = ["rt-multi-thread", "macros", "sync", "time", "fs"] }
 serde = { version = "1.0", features = ["derive"] }
