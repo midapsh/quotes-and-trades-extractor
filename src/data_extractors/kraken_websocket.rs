@@ -45,7 +45,7 @@ impl KrakenWebsocket {
 
         let subscribe = serde_json::to_string(&subscribe).unwrap();
         stream
-            .send(TMessage::Text("{\"op\": \"ping\"}".to_string()))
+            .send(TMessage::Text( serde_json::json!({"op": "ping"}).to_string()))
             .await?;
         stream.send(TMessage::Text(subscribe)).await?;
         println!("subscription sent");

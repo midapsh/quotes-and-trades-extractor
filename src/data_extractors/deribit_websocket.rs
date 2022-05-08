@@ -47,11 +47,17 @@ impl DeribitWebsocket {
         let (mut stream, _response) = connect_async(Self::URL).await?;
         println!("WebSocket handshake has been successfully completed");
 
-        let auth_msg = format!(
-            "{{\"jsonrpc\":\"2.0\",\"id\":0,\"method\":\"public/auth\",\"params\":{{\"grant_type\":\"client_credentials\",\"client_id\":\"{client_id}\",\"client_secret\":\"{client_secret}\"}}}}",
-            client_id=settings.deribit.client_id,
-            client_secret=settings.deribit.client_secret
-        );
+        let auth_msg = serde_json::json!({
+            "jsonrpc": "2.0",
+            "id": 0,
+            "method": "public/auth",
+            "params": {
+                "grant_type": "client_credentials",
+                "client_id":settings.deribit.client_id,
+                "client_secret":settings.deribit.client_secret
+            }
+        })
+        .to_string();
         println!("{}", auth_msg);
         stream.send(TMessage::Text(auth_msg)).await?;
         let a = stream.try_next().await?;
