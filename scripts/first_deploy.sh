@@ -77,11 +77,5 @@ sudo systemctl daemon-reload
 sudo systemctl start okx-extractor
 
 
-
-chmod a+x entrypoints/log_cpu_resources.sh
-sudo systemctl enable "/opt/exchange-extractor/services/log-cpu-resources.service"
-sudo systemctl daemon-reload
-sudo systemctl start log-cpu-resources
-
 popd
 popd

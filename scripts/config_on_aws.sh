@@ -96,14 +96,3 @@ sudo systemctl start okx-extractor
 sudo systemctl status okx-extractor
 sudo systemctl stop okx-extractor
 
-
-
-chmod a+x entrypoints/log_cpu_resources.sh
-sudo systemctl enable "/opt/exchange-extractor/services/log-cpu-resources.service"
-sudo systemctl daemon-reload
-sudo systemctl start log-cpu-resources
-sudo systemctl status log-cpu-resources
-sudo systemctl stop log-cpu-resources
-
-
-

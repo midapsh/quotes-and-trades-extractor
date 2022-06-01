@@ -12,7 +12,7 @@ Type=simple
 WorkingDirectory=/opt/exchange-extractor/entrypoints
 ExecStart=/opt/exchange-extractor/entrypoints/bitmex_extractor_entrypoint.sh
 Restart=on-failure
-RestartSec=5s
+RestartSec=1s
 
 [Install]
 WantedBy=multi-user.target
