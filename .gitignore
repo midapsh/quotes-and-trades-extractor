@@ -1,14 +1,8 @@
 /target
-bitmex.log
-coinbase.log
-deribit.log
-ftx.log
-kraken.log
-binance_spot.log
-binance_stable.log
-binance_coin.log
-okx.log
-bitstamp.log
-kraken_futures.log
 
 production.yaml
+
+data/*
+!data/.gitkeep
+log/*
+!log/.gitkeep
