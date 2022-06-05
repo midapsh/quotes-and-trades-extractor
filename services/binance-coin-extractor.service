@@ -9,8 +9,8 @@ After=network.target
 
 [Service]
 Type=simple
-WorkingDirectory=/opt/exchange-extractor/entrypoints
-ExecStart=/opt/exchange-extractor/entrypoints/binance_coin_extractor_entrypoint.sh
+WorkingDirectory=/opt/trading-system/exchange-extractor/entrypoints
+ExecStart=/opt/trading-system/exchange-extractor/entrypoints/binance_coin_extractor_entrypoint.sh
 Restart=on-failure
 RestartSec=1s
 

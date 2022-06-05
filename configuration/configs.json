@@ -1,0 +1,64 @@
+{
+    "log_path": "/var/log/trading-system/",
+    "data_path": "/opt/trading-system/exchange-extractor/",
+    "binance_coin": {
+        "api_key": "",
+        "api_secret": "",
+        "rest_url": "",
+        "websocket_url": ""
+    },
+    "binance_spot": {
+        "api_key": "",
+        "api_secret": "",
+        "rest_url": "",
+        "websocket_url": ""
+    },
+    "binance_stable": {
+        "api_key": "",
+        "api_secret": "",
+        "rest_url": "",
+        "websocket_url": ""
+    },
+    "bitmex": {
+        "api_key": "",
+        "api_secret": "",
+        "rest_url": "",
+        "websocket_url": ""
+    },
+    "bitstamp": {
+        "api_key": "",
+        "api_secret": "",
+        "rest_url": "",
+        "websocket_url": ""
+    },
+    "coinbase": {
+        "api_key": "",
+        "api_secret": "",
+        "rest_url": "",
+        "websocket_url": ""
+    },
+    "ftx": {
+        "api_key": "",
+        "api_secret": "",
+        "rest_url": "",
+        "websocket_url": ""
+    },
+    "kraken_futures": {
+        "api_key": "",
+        "api_secret": "",
+        "rest_url": "",
+        "websocket_url": ""
+    },
+    "kraken": {
+        "api_key": "",
+        "api_secret": "",
+        "rest_url": "",
+        "websocket_url": ""
+    },
+    "okx": {
+        "api_key": "",
+        "api_secret": "",
+        "rest_url": "",
+        "websocket_url": ""
+    }
+}
