@@ -8,6 +8,7 @@ use crate::data_extractors::bitstamp_websocket::BitstampWebsocket;
 pub async fn bitstamp_process() {
     let stream = BitstampWebsocket::connect(Data {
         channel: String::from(format!("{}{}", "order_book_", "btcusd")),
+        // channel: String::from(format!("{}{}", "live_trades_", "btcusd")),
     })
     .await
     .unwrap();

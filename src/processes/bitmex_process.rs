@@ -6,10 +6,12 @@ use crate::commands::bitmex_subscribe::Args;
 use crate::data_extractors::bitmex_websocket::BitmexWebsocket;
 
 pub async fn bitmex_process() {
-    let stream =
-        BitmexWebsocket::connect(Args::WithProduct(vec![String::from("orderBookL2:XBTUSD")]))
-            .await
-            .unwrap();
+    let stream = BitmexWebsocket::connect(Args::WithProduct(vec![
+        String::from("quote:XBTUSD"),
+        String::from("trade:XBTUSD"),
+    ]))
+    .await
+    .unwrap();
 
     stream
         .try_for_each(|msg| async {

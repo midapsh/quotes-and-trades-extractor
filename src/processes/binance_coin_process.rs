@@ -6,9 +6,10 @@ use crate::commands::binance_subscribe::Params;
 use crate::data_extractors::binance_coin_websocket::BinanceCoinWebsocket;
 
 pub async fn binance_coin_process() {
-    let stream = BinanceCoinWebsocket::connect(Params::WithProduct(vec![String::from(
-        "btcusd_perp@depth@0ms",
-    )]))
+    let stream = BinanceCoinWebsocket::connect(Params::WithProduct(vec![
+        String::from("btcusd_perp@bookTicker"),
+        String::from("btcusd_perp@trade"),
+    ]))
     .await
     .unwrap();
 

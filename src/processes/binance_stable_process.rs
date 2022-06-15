@@ -6,9 +6,10 @@ use crate::commands::binance_subscribe::Params;
 use crate::data_extractors::binance_stable_websocket::BinanceStableWebsocket;
 
 pub async fn binance_stable_process() {
-    let stream = BinanceStableWebsocket::connect(Params::WithProduct(vec![String::from(
-        "btcusdt@depth@0ms",
-    )]))
+    let stream = BinanceStableWebsocket::connect(Params::WithProduct(vec![
+        String::from("btcusdt@bookTicker"),
+        String::from("btcusdt@trade"),
+    ]))
     .await
     .unwrap();
 

@@ -5,8 +5,8 @@ pub struct Settings {
 
 #[derive(Clone, Debug, serde::Deserialize)]
 pub struct DeribitSettings {
-    pub client_id: String,
-    pub client_secret: String,
+    pub api_key: String,
+    pub api_secret: String,
 }
 
 pub fn get_configuration() -> Result<Settings, config::ConfigError> {

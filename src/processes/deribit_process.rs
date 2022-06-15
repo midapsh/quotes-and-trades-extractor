@@ -8,7 +8,10 @@ use crate::data_extractors::deribit_websocket::DeribitWebsocket;
 
 pub async fn deribit_process() {
     let stream = DeribitWebsocket::connect(Args::Orderbook {
-        channels: vec!["book.BTC-PERPETUAL.raw".to_string()],
+        channels: vec![
+            "quote.BTC-PERPETUAL".to_string(),
+            "trades.BTC-PERPETUAL.raw".to_string(),
+        ],
     })
     .await
     .unwrap();

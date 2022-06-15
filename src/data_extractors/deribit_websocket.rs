@@ -53,8 +53,8 @@ impl DeribitWebsocket {
             "method": "public/auth",
             "params": {
                 "grant_type": "client_credentials",
-                "client_id":settings.deribit.client_id,
-                "client_secret":settings.deribit.client_secret
+                "client_id":settings.deribit.api_key,
+                "client_secret":settings.deribit.api_secret
             }
         })
         .to_string();
