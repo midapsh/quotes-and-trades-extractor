@@ -10,33 +10,29 @@ use tokio_tungstenite::{connect_async, tungstenite::Message as TMessage, WebSock
 
 pub struct CoinbaseWebsocket;
 
-use crate::commands::coinbase_subscribe::{Channel, ChannelType, Subscribe, SubscribeCmd};
+use crate::commands::coinbase_subscribe::{Channel, Subscribe, SubscribeCmd};
 
 impl CoinbaseWebsocket {
     const URL: &'static str = "wss://ws-feed-public.sandbox.pro.coinbase.com";
 
     /// Constructor for simple subcription with product_ids and channels
     pub async fn connect(
-        channel: ChannelType,
-        products_ids: Vec<String>,
+        channels: Vec<Channel>,
     ) -> core::result::Result<
         WebSocketStream<tokio_tungstenite::MaybeTlsStream<tokio::net::TcpStream>>,
         tokio_tungstenite::tungstenite::error::Error,
     > {
-        let subscribe = Subscribe {
+        let subscriptions = Subscribe {
             _type: SubscribeCmd::Subscribe,
-            channels: vec![Channel::WithProduct {
-                channel,
-                products_ids,
-            }],
+            channels,
         };
 
-        Self::connect_with_sub(subscribe).await
+        Self::connect_with_sub(subscriptions).await
     }
 
     /// Constructor for extended subcription via Subscribe structure
     pub async fn connect_with_sub(
-        subscribe: Subscribe,
+        subscriptions: Subscribe,
     ) -> core::result::Result<
         WebSocketStream<tokio_tungstenite::MaybeTlsStream<tokio::net::TcpStream>>,
         tokio_tungstenite::tungstenite::error::Error,
@@ -44,7 +40,7 @@ impl CoinbaseWebsocket {
         let (mut stream, _response) = connect_async(Self::URL).await?;
         println!("WebSocket handshake has been successfully completed");
 
-        let subscribe = serde_json::to_string(&subscribe).unwrap();
+        let subscribe = serde_json::to_string(&subscriptions).unwrap();
         stream.send(TMessage::Text(subscribe)).await?;
         println!("subscription sent");
 

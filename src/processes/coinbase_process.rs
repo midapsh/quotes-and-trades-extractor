@@ -2,13 +2,24 @@ use futures::TryStreamExt;
 use tokio::fs::OpenOptions;
 use tokio::io::AsyncWriteExt; // for write_all()
 
-use crate::commands::coinbase_subscribe::ChannelType;
+use crate::commands::coinbase_subscribe::{Channel, ChannelType};
 use crate::data_extractors::coinbase_websocket::CoinbaseWebsocket;
 
 pub async fn coinbase_process() {
-    let stream = CoinbaseWebsocket::connect(ChannelType::Level2, vec![String::from("BTC-USD")])
-        .await
-        .unwrap();
+    let stream = CoinbaseWebsocket::connect(vec![
+        // NOTE(hspadim): Don`t have quotes messages
+        Channel::WithProduct {
+            channel: ChannelType::Level2,
+            products_ids: vec![String::from("BTC-USD")],
+        },
+        // NOTE(hspadim): Save best bid/ask
+        Channel::WithProduct {
+            channel: ChannelType::Ticker,
+            products_ids: vec![String::from("BTC-USD")],
+        },
+    ])
+    .await
+    .unwrap();
 
     stream
         .try_for_each(|msg| async {
