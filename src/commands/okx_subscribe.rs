@@ -27,6 +27,10 @@ pub enum ChannelsType {
     // Candles,
     #[serde(rename = "books-l2-tbt")]
     Orderbook,
+    #[serde(rename = "bbo-tbt")]
+    Quotes,
+    #[serde(rename = "trades")]
+    Trades,
     // #[serde(rename = "snapshot")]
     // Snapshot,
     // #[serde(rename = "trades")]

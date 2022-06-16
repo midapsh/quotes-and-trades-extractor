@@ -6,10 +6,16 @@ use crate::commands::okx_subscribe::{Arg, ChannelsType};
 use crate::data_extractors::okx_websocket::OkxWebsocket;
 
 pub async fn okx_process() {
-    let stream = OkxWebsocket::connect(vec![Arg {
-        channel: ChannelsType::Orderbook,
-        instrument_id: String::from("BTC-USDT"),
-    }])
+    let stream = OkxWebsocket::connect(vec![
+        Arg {
+            channel: ChannelsType::Quotes,
+            instrument_id: String::from("BTC-USDT"),
+        },
+        Arg {
+            channel: ChannelsType::Trades,
+            instrument_id: String::from("BTC-USDT"),
+        }
+    ])
     .await
     .unwrap();
 
