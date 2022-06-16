@@ -15,26 +15,9 @@ use crate::commands::kraken_futures_subscribe::{FeedType, Subscribe, SubscribeCm
 impl KrakenFuturesWebsocket {
     const URL: &'static str = "wss://futures.kraken.com/ws/v1";
 
-    /// Constructor for simple subcription with product_ids and args
-    pub async fn connect(
-        product_ids: Vec<String>,
-        feed: FeedType,
-    ) -> core::result::Result<
-        WebSocketStream<tokio_tungstenite::MaybeTlsStream<tokio::net::TcpStream>>,
-        tokio_tungstenite::tungstenite::error::Error,
-    > {
-        let subscribe = Subscribe {
-            _type: SubscribeCmd::Subscribe,
-            product_ids: product_ids,
-            feed: feed,
-        };
-
-        Self::connect_with_sub(subscribe).await
-    }
-
     /// Constructor for extended subcription via Subscribe structure
-    pub async fn connect_with_sub(
-        subscribe: Subscribe,
+    pub async fn connect(
+        subscriptions: Vec<Subscribe>,
     ) -> core::result::Result<
         WebSocketStream<tokio_tungstenite::MaybeTlsStream<tokio::net::TcpStream>>,
         tokio_tungstenite::tungstenite::error::Error,
@@ -42,8 +25,10 @@ impl KrakenFuturesWebsocket {
         let (mut stream, _response) = connect_async(Self::URL).await?;
         println!("WebSocket handshake has been successfully completed");
 
-        let subscribe = serde_json::to_string(&subscribe).unwrap();
-        stream.send(TMessage::Text(subscribe)).await?;
+        for subscribe in subscriptions {
+            let subscribe = serde_json::to_string(&subscribe).unwrap();
+            stream.send(TMessage::Text(subscribe)).await?;
+        }
         println!("subscription sent");
 
         Ok(stream)

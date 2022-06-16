@@ -16,12 +16,10 @@ pub enum SubscribeCmd {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub enum FeedType {
-    // #[serde(rename = "candles")]
-    // Candles,
     #[serde(rename = "book")]
     Orderbook,
-    // #[serde(rename = "snapshot")]
-    // Snapshot,
-    // #[serde(rename = "trades")]
-    // Trades,
+    #[serde(rename = "ticker")]
+    Ticker,
+    #[serde(rename = "trade")]
+    Trade,
 }

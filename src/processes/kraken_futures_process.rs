@@ -2,14 +2,26 @@ use futures::TryStreamExt;
 use tokio::fs::OpenOptions;
 use tokio::io::AsyncWriteExt; // for write_all()
 
-use crate::commands::kraken_futures_subscribe::FeedType;
+use crate::commands::kraken_futures_subscribe::{FeedType, Subscribe, SubscribeCmd};
 use crate::data_extractors::kraken_futures_websocket::KrakenFuturesWebsocket;
+
 
 pub async fn kraken_futures_process() {
     let stream =
-        KrakenFuturesWebsocket::connect(vec![String::from("PI_XBTUSD")], FeedType::Orderbook)
-            .await
-            .unwrap();
+        KrakenFuturesWebsocket::connect(vec![
+            Subscribe {
+                _type: SubscribeCmd::Subscribe,
+                product_ids: vec![String::from("PI_XBTUSD")],
+                feed: FeedType::Trade,
+            },
+            Subscribe {
+                _type: SubscribeCmd::Subscribe,
+                product_ids: vec![String::from("PI_XBTUSD")],
+                feed: FeedType::Ticker,
+            },
+        ])
+        .await
+        .unwrap();
 
     stream
         .try_for_each(|msg| async {
