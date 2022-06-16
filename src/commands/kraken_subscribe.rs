@@ -7,7 +7,7 @@ pub struct Subscribe {
     #[serde(rename = "pair")]
     pub products: Products,
     #[serde(rename = "subscription")]
-    pub options: Options,
+    pub subscription: Subscription,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -24,18 +24,21 @@ pub enum Products {
 
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(untagged)]
-pub enum Options {
-    Orderbook { name: String, depth: usize },
+pub enum Subscription {
+    Tickers { name: SubscriptionNames },
+    Trades { name: SubscriptionNames },
+    Quotes { name: SubscriptionNames },
+    Orderbook { name: SubscriptionNames, depth: usize },
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-pub enum ArgsType {
-    #[serde(rename = "candles")]
-    Candles,
-    #[serde(rename = "orderbook")]
-    Orderbook,
-    #[serde(rename = "snapshot")]
-    Snapshot,
-    #[serde(rename = "trades")]
+pub enum SubscriptionNames {
+    #[serde(rename = "ticker")]
+    Tickers,
+    #[serde(rename = "trade")]
     Trades,
+    #[serde(rename = "spread")]
+    Quotes,
+    #[serde(rename = "book")]
+    Orderbook,
 }

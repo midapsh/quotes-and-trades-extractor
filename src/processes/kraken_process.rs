@@ -2,16 +2,25 @@ use futures::TryStreamExt;
 use tokio::fs::OpenOptions;
 use tokio::io::AsyncWriteExt; // for write_all()
 
-use crate::commands::kraken_subscribe::{Options, Products};
+use crate::commands::kraken_subscribe::{Subscribe, SubscribeCmd, Subscription, SubscriptionNames, Products};
 use crate::data_extractors::kraken_websocket::KrakenWebsocket;
 
 pub async fn kraken_process() {
-    let stream = KrakenWebsocket::connect(
-        Products::Name(vec![String::from("XBT/USD")]),
-        Options::Orderbook {
-            name: "book".to_string(),
-            depth: 1000,
+    
+    let stream = KrakenWebsocket::connect(vec![
+        Subscribe {
+            _type: SubscribeCmd::Subscribe,
+            products: Products::Name(vec![String::from("XBT/USD")]),
+            subscription: Subscription::Quotes {name:SubscriptionNames::Quotes },
         },
+        Subscribe {
+            _type: SubscribeCmd::Subscribe,
+            products: Products::Name(vec![String::from("XBT/USD")]),
+            subscription: Subscription::Trades {
+                name: SubscriptionNames::Trades,
+            },
+        },
+    ]
     )
     .await
     .unwrap();
@@ -25,7 +34,11 @@ pub async fn kraken_process() {
                 .await?;
             match msg {
                 tokio_tungstenite::tungstenite::Message::Text(message) => {
-                    file.write_all(format!("{}\n", message).as_bytes()).await?
+                    if let Some(a) = message.chars().nth(1) {
+                        if a.is_digit(10) {
+                            file.write_all(format!("{}\n", message).as_bytes()).await?
+                        }
+                    }
                 }
                 // tokio_tungstenite::tungstenite::Message::Binary(_) => todo!(),
                 // tokio_tungstenite::tungstenite::Message::Ping(_) => todo!(),
