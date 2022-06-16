@@ -14,7 +14,6 @@ pub enum SubscribeCmd {
     Subscribe,
 }
 
-// Link: https://www.okx.com/docs/en/#websocket-api-public-channel-order-book-channel
 #[derive(Serialize, Deserialize, Debug)]
 pub enum FeedType {
     // #[serde(rename = "candles")]
