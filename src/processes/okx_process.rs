@@ -24,7 +24,7 @@ pub async fn okx_process() {
             let mut file = OpenOptions::new()
                 .append(true)
                 .create(true)
-                .open("okx.log")
+                .open("/var/lib/trading-system/quotes-and-trades-extractor/v0.1/data/okx.log")
                 .await?;
             match msg {
                 tokio_tungstenite::tungstenite::Message::Text(message) => {

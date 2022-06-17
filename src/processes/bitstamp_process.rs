@@ -22,7 +22,7 @@ pub async fn bitstamp_process() {
             let mut file = OpenOptions::new()
                 .append(true)
                 .create(true)
-                .open("bitstamp.log")
+                .open("/var/lib/trading-system/quotes-and-trades-extractor/v0.1/data/bitstamp.log")
                 .await?;
             match msg {
                 tokio_tungstenite::tungstenite::Message::Text(message) => {

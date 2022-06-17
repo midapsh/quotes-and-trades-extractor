@@ -20,7 +20,7 @@ pub async fn ftx_process() {
                 let mut file = OpenOptions::new()
                     .append(true)
                     .create(true)
-                    .open("ftx.log")
+                    .open("/var/lib/trading-system/quotes-and-trades-extractor/v0.1/data/ftx.log")
                     .await?;
                 match msg {
                     tokio_tungstenite::tungstenite::Message::Text(message) => {

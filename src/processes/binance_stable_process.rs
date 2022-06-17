@@ -18,7 +18,7 @@ pub async fn binance_stable_process() {
             let mut file = OpenOptions::new()
                 .append(true)
                 .create(true)
-                .open("binance_stable.log")
+                .open("/var/lib/trading-system/quotes-and-trades-extractor/v0.1/data/binance_stable.log")
                 .await?;
             match msg {
                 tokio_tungstenite::tungstenite::Message::Text(message) => {

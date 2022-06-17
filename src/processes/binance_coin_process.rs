@@ -1,3 +1,4 @@
+use exchange_extractor::configuration::get_configuration;
 use futures::TryStreamExt;
 use tokio::fs::OpenOptions;
 use tokio::io::AsyncWriteExt; // for write_all()
@@ -12,7 +13,7 @@ pub async fn binance_coin_process() {
     ]))
     .await
     .unwrap();
-
+    
     stream
         .try_for_each(|msg| async {
             let mut file = OpenOptions::new()

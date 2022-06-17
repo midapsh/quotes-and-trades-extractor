@@ -26,7 +26,7 @@ pub async fn coinbase_process() {
             let mut file = OpenOptions::new()
                 .append(true)
                 .create(true)
-                .open("coinbase.log")
+                .open("/var/lib/trading-system/quotes-and-trades-extractor/v0.1/data/coinbase.log")
                 .await?;
             match msg {
                 tokio_tungstenite::tungstenite::Message::Text(message) => {
