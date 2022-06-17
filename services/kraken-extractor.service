@@ -9,7 +9,7 @@ After=network.target
 
 [Service]
 Type=simple
-WorkingDirectory=/opt/trading-system/exchange-extractor/entrypoints
+WorkingDirectory=/opt/trading-system/exchange-extractor
 ExecStart=/opt/trading-system/exchange-extractor/entrypoints/kraken_extractor_entrypoint.sh
 Restart=on-failure
 RestartSec=1s
