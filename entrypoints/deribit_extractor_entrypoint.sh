@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -e
+# set -e
 
 export APP_ENVIRONMENT="production"
 bin/deribit
