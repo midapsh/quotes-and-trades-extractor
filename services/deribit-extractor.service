@@ -9,7 +9,6 @@ After=network.target
 
 [Service]
 Type=simple
-User=trading-system-extractor
 WorkingDirectory=/opt/trading-system/exchange-extractor/entrypoints
 ExecStart=/opt/trading-system/exchange-extractor/entrypoints/deribit_extractor_entrypoint.sh
 Restart=on-failure
