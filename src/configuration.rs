@@ -1,12 +1,31 @@
+use std::path::PathBuf;
+
+
 #[derive(serde::Deserialize, Clone, Debug)]
 pub struct Settings {
-    pub deribit: DeribitSettings,
+    pub log_path: PathBuf,
+    pub data_path: PathBuf,
+    // Exchanges
+    pub binance_coin: ExchangeSettings,
+    pub binance_spot: ExchangeSettings,
+    pub binance_stable: ExchangeSettings,
+    pub bitmex: ExchangeSettings,
+    pub bitstamp: ExchangeSettings,
+    pub coinbase: ExchangeSettings,
+    pub deribit: ExchangeSettings,
+    pub ftx: ExchangeSettings,
+    pub kraken_futures: ExchangeSettings,
+    pub kraken: ExchangeSettings,
+    pub okx: ExchangeSettings,
 }
 
 #[derive(Clone, Debug, serde::Deserialize)]
-pub struct DeribitSettings {
+pub struct ExchangeSettings {
     pub api_key: String,
     pub api_secret: String,
+    pub rest_url: String,
+    pub websocket_url: String,
+    pub http_timeout: u64,
 }
 
 pub fn get_configuration() -> Result<Settings, config::ConfigError> {
