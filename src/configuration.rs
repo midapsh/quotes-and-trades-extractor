@@ -25,7 +25,6 @@ pub struct ExchangeSettings {
     pub api_secret: String,
     pub rest_url: String,
     pub websocket_url: String,
-    pub http_timeout: u64,
 }
 
 pub fn get_configuration() -> Result<Settings, config::ConfigError> {
