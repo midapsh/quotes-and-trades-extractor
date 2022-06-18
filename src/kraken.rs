@@ -1,3 +1,4 @@
+mod configs;
 mod commands;
 mod data_extractors;
 mod processes;

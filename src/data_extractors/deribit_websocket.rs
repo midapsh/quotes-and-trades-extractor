@@ -6,7 +6,7 @@ use tokio_tungstenite::{connect_async, tungstenite::Message as TMessage, WebSock
 
 // use super::errors::deribit_errors::CBError;
 // use crate::errors::websocket_errors::WSError;
-use exchange_extractor::configuration;
+use crate::configs::configuration;
 
 // use tokio_tungstenite::connect_async;
 

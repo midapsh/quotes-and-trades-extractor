@@ -1,7 +1,7 @@
-use exchange_extractor::configuration::get_configuration;
 use futures::TryStreamExt;
 use tokio::fs::OpenOptions;
 use tokio::io::AsyncWriteExt; // for write_all()
+
 
 use crate::commands::binance_subscribe::Params;
 use crate::data_extractors::binance_coin_websocket::BinanceCoinWebsocket;
