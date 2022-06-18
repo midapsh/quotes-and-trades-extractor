@@ -11,7 +11,7 @@ After=network.target
 Type=simple
 WorkingDirectory=/opt/trading-system/exchange-extractor
 ExecStart=/opt/trading-system/exchange-extractor/entrypoints/binance_coin_extractor_entrypoint.sh
-Restart=on-failure
+Restart=always
 RestartSec=1s
 
 [Install]
