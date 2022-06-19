@@ -3,11 +3,24 @@ use tokio::fs::OpenOptions;
 use tokio::io::AsyncWriteExt; // for write_all()
 use tokio_tungstenite::tungstenite::Message as TMessage;
 
-use crate::commands::ftx_subscribe::{ArgsType, Product};
+use crate::commands::ftx_subscribe::{ArgsType, Product, Subscribe, SubscribeCmd};
 use crate::data_extractors::ftx_websocket::FTXWebsocket;
 
 pub async fn ftx_process() {
-    let stream = FTXWebsocket::connect(ArgsType::Ticker, Product::Name(String::from("btc/usd")))
+    let stream = FTXWebsocket::connect(vec![
+        Subscribe {
+            _type: SubscribeCmd::Subscribe,
+            arg: ArgsType::Quotes,
+            product: Product::Name(String::from("btc/usd")),
+        },
+        Subscribe {
+            _type: SubscribeCmd::Subscribe,
+            arg: ArgsType::Trades,
+            product: Product::Name(String::from("btc/usd")),
+        }
+    ]
+        
+    )
         .await
         .unwrap();
 

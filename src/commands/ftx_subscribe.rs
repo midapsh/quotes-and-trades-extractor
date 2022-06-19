@@ -29,7 +29,7 @@ pub enum ArgsType {
     #[serde(rename = "orderbook")]
     Orderbook,
     #[serde(rename = "ticker")]
-    Ticker,
+    Quotes,
     #[serde(rename = "trades")]
     Trades,
 }
