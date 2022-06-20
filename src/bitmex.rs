@@ -2,6 +2,7 @@ mod configs;
 mod commands;
 mod data_extractors;
 mod processes;
+mod custom_parsers;
 
 use processes::bitmex_process::bitmex_process;
 

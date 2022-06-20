@@ -61,6 +61,8 @@ async-trait = "0.1"
 futures = "0.3"
 # Configs
 config = { version = "0.11", default-features = false, features = ["yaml"] }
+# Timestamp
+chrono = "0.4"
 ##################
 # CoinBase
 # coinbase-pro-rs = "0.7.1"
