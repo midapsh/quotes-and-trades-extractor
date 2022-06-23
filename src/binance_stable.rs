@@ -1,7 +1,10 @@
-mod configs;
 mod commands;
+mod configs;
+mod custom_deserializers;
+mod custom_parsers;
 mod data_extractors;
 mod processes;
+
 
 use processes::binance_stable_process::binance_stable_process;
 
