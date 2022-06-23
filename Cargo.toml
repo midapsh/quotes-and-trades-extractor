@@ -63,6 +63,8 @@ futures = "0.3"
 config = { version = "0.11", default-features = false, features = ["yaml"] }
 # Timestamp
 chrono = "0.4"
+# For binary file serde
+bincode = "1.3"
 ##################
 # CoinBase
 # coinbase-pro-rs = "0.7.1"

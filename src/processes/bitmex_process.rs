@@ -1,9 +1,11 @@
+use bincode::Options;
 use futures::TryStreamExt;
 use tokio::fs::OpenOptions;
-use tokio::io::AsyncWriteExt; // for write_all()
+use tokio::io::{AsyncWriteExt, BufWriter}; // for write_all()
 
 use crate::commands::bitmex_subscribe::Args;
-use crate::custom_parsers::bitmex_parser::{BitmexParser, get_default_timestamp};
+use crate::custom_deserializers::quotes_and_trades_deserializer::QuotesAndTrades;
+use crate::custom_parsers::bitmex_parser::{get_default_timestamp, BitmexParser};
 use crate::data_extractors::bitmex_websocket::BitmexWebsocket;
 
 pub async fn bitmex_process() {
@@ -21,8 +23,12 @@ pub async fn bitmex_process() {
                 .append(true)
                 .create(true)
                 // .open("/var/lib/trading-system/quotes-and-trades-extractor/v0.1/data/bitmex.log")
-                .open(format!("bitmex-{}.csv", COIN))
+                .open(format!("bitmex-{}.dat", COIN))
                 .await?;
+            let mut f_write = BufWriter::new(file);
+            let custom_bincode = bincode::DefaultOptions::new()
+                .with_fixint_encoding()
+                .allow_trailing_bytes();
             // const FORMAT: &str = "{default_timestamp},{exchange_timestamp},{symbol},{best_bid_price},{best_bid_size},{best_ask_price},{best_ask_size},{side},{size},{price},{exchange_id}\n";
             let default_timestamp = get_default_timestamp();
             match msg {
@@ -30,43 +36,36 @@ pub async fn bitmex_process() {
                     let bitmex_msg: BitmexParser = serde_json::from_str(&message).unwrap();
                     match bitmex_msg {
                         BitmexParser::Quotes(quotes) => {
-                            let quotes_messages = quotes.data.into_iter().map(|quote| {
-                                return format!(
-                                    // "{default_timestamp},{exchange_timestamp},{symbol},{best_bid_price},{best_bid_size},{best_ask_price},{best_ask_size},{side},{size},{price}\n",
-                                    "{default_timestamp},{exchange_timestamp},{best_bid_price},{best_bid_size},{best_ask_price},{best_ask_size},{side},{size},{price}\n",
-                                    default_timestamp=default_timestamp,
-                                    exchange_timestamp=quote.exchange_timestamp,
-                                    // symbol=quote.symbol,
-                                    best_bid_price=quote.best_bid_price,
-                                    best_bid_size=quote.best_bid_size,
-                                    best_ask_price=quote.best_ask_price,
-                                    best_ask_size=quote.best_ask_size,
-                                    side="",
-                                    size="",
-                                    price="",
-                                );
-                            }).collect::<String>();
-                            file.write_all(quotes_messages.as_bytes()).await?
-                            
+                            let quotes = quotes.data.iter().map(|quote| QuotesAndTrades {
+                                default_timestamp: default_timestamp,
+                                exchange_timestamp: quote.exchange_timestamp,
+                                best_bid_price: quote.best_bid_price,
+                                best_bid_size: quote.best_bid_size,
+                                best_ask_price: quote.best_ask_price,
+                                best_ask_size: quote.best_ask_size,
+                                side: u8::MIN,
+                                size: f64::NAN,
+                                price: f64::NAN,
+                            }).collect::<Vec<_>>();
+                            let a = custom_bincode.serialize(&quotes).unwrap();
+                            f_write.write_all(&a).await?;
+                            f_write.flush().await?;
                         },
                         BitmexParser::Trades(trades) => {
-                            let trades_messages = trades.data.into_iter().map(|trade| {
-                                return format!(
-                                    // "{default_timestamp},{exchange_timestamp},{symbol},{best_bid_price},{best_bid_size},{best_ask_price},{best_ask_size},{side},{size},{price}\n",
-                                    "{default_timestamp},{exchange_timestamp},{best_bid_price},{best_bid_size},{best_ask_price},{best_ask_size},{side},{size},{price}\n",
-                                    default_timestamp=default_timestamp,
-                                    exchange_timestamp=trade.exchange_timestamp,
-                                    // symbol=trade.symbol,
-                                    best_bid_price="",
-                                    best_bid_size="",
-                                    best_ask_price="",
-                                    best_ask_size="",
-                                    side=trade.side,
-                                    size=trade.size,
-                                    price=trade.price,
-                                );
-                            }).collect::<String>();
-                            file.write_all(trades_messages.as_bytes()).await?
+                            let trades = trades.data.iter().map(|trade| QuotesAndTrades {
+                                default_timestamp: default_timestamp,
+                                exchange_timestamp: trade.exchange_timestamp,
+                                best_bid_price: f64::NAN,
+                                best_bid_size: f64::NAN,
+                                best_ask_price: f64::NAN,
+                                best_ask_size: f64::NAN,
+                                side: trade.side.into(),
+                                size: trade.size,
+                                price: trade.price,
+                            }).collect::<Vec<_>>();
+                            let a = custom_bincode.serialize(&trades).unwrap();
+                            f_write.write_all(&a).await?;
+                            f_write.flush().await?;
                         },
                         _ => (),
                     }

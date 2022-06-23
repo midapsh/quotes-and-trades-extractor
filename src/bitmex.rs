@@ -1,8 +1,9 @@
-mod configs;
 mod commands;
+mod configs;
+mod custom_deserializers;
+mod custom_parsers;
 mod data_extractors;
 mod processes;
-mod custom_parsers;
 
 use processes::bitmex_process::bitmex_process;
 

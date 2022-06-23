@@ -10,14 +10,14 @@ pub enum BitmexParser {
     Trades(Trades),
     #[serde(rename = "quote")]
     Quotes(Quotes),
-    #[serde(skip_deserializing)]
-    WithOther(String),
+    // #[serde(skip_deserializing)]
+    // WithOther(String),
 }
 
 #[derive(Deserialize, Debug)]
 pub struct Trades {
-    #[serde(skip_deserializing)]
-    action: String,
+    // #[serde(skip_deserializing)]
+    // action: String,
     pub data: Vec<Trade>,
 }
 
@@ -30,13 +30,14 @@ pub struct Trade {
     pub side: Side,
     pub size: f64,
     pub price: f64,
-    #[serde(skip_deserializing)]
-    trdMatchID: String,
+    // #[serde(skip_deserializing)]
+    // trdMatchID: String,
     // #[serde(rename = "trdMatchID")]
     // exchange_id: String,
 }
 
-#[derive(Deserialize, Debug)]
+
+#[derive(Deserialize, Debug, Copy, Clone)]
 pub enum Side {
     #[serde(rename = "Sell")]
     Sell,
@@ -53,10 +54,19 @@ impl fmt::Display for Side {
     }
 }
 
+impl Into<u8> for Side {
+    fn into(self) -> u8 {
+        match self {
+            Side::Sell => b's',
+            Side::Buy => b'b',
+        }
+    }
+}
+
 #[derive(Deserialize, Debug)]
 pub struct Quotes {
-    #[serde(skip_deserializing)]
-    action: String,
+    // #[serde(skip_deserializing)]
+    // action: String,
     pub data: Vec<Quote>,
 }
 
