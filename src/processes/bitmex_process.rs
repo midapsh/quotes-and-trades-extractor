@@ -4,6 +4,7 @@ use tokio::fs::OpenOptions;
 use tokio::io::{AsyncWriteExt, BufWriter}; // for write_all()
 
 use crate::commands::bitmex_subscribe::Args;
+use crate::configs::configuration;
 use crate::custom_deserializers::quotes_and_trades_deserializer::QuotesAndTrades;
 use crate::custom_parsers::bitmex_parser::{get_default_timestamp, BitmexParser};
 use crate::data_extractors::bitmex_websocket::BitmexWebsocket;
@@ -25,11 +26,16 @@ pub async fn bitmex_process() {
 
     stream
         .try_for_each(|msg| async {
+            let settings = configuration::get_configuration().unwrap();
+            let filepath = settings
+                .data_path
+                .join(format!("bitmex-{}.dat", COIN));
             let file = OpenOptions::new()
                 .append(true)
                 .create(true)
                 // .open("/var/lib/trading-system/quotes-and-trades-extractor/v0.1/data/bitmex.log")
-                .open(format!("bitmex-{}.dat", COIN))
+                // .open(format!("bitmex-{}.dat", COIN))
+                .open(filepath)
                 .await?;
             let mut f_write = BufWriter::with_capacity(MAX_CAPACITY, file);
             let custom_bincode = bincode::DefaultOptions::new()
@@ -44,17 +50,21 @@ pub async fn bitmex_process() {
                     let bitmex_msg: BitmexParser = serde_json::from_str(&message).unwrap();
                     match bitmex_msg {
                         BitmexParser::Quotes(quotes) => {
-                            let quotes = quotes.data.iter().map(|quote| QuotesAndTrades {
-                                default_timestamp: default_timestamp,
-                                exchange_timestamp: quote.exchange_timestamp,
-                                best_bid_price: quote.best_bid_price,
-                                best_bid_size: quote.best_bid_size,
-                                best_ask_price: quote.best_ask_price,
-                                best_ask_size: quote.best_ask_size,
-                                side: u8::MIN,
-                                size: f64::NAN,
-                                price: f64::NAN,
-                            }).collect::<Vec<_>>();
+                            let quotes = quotes
+                                .data
+                                .iter()
+                                .map(|quote| QuotesAndTrades {
+                                    default_timestamp: default_timestamp,
+                                    exchange_timestamp: quote.exchange_timestamp,
+                                    best_bid_price: quote.best_bid_price,
+                                    best_bid_size: quote.best_bid_size,
+                                    best_ask_price: quote.best_ask_price,
+                                    best_ask_size: quote.best_ask_size,
+                                    side: u8::MIN,
+                                    size: f64::NAN,
+                                    price: f64::NAN,
+                                })
+                                .collect::<Vec<_>>();
                             let bin_quotes = custom_bincode.serialize(&quotes).unwrap();
                             f_write.write_all(&bin_quotes[USIZE_LEN..]).await?;
                             f_write.flush().await?;
