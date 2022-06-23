@@ -10,8 +10,8 @@ pub enum BitmexParser {
     Trades(Trades),
     #[serde(rename = "quote")]
     Quotes(Quotes),
-    // #[serde(skip_deserializing)]
-    // WithOther(String),
+    #[serde(skip)]
+    WithOther(String),
 }
 
 #[derive(Deserialize, Debug)]
@@ -27,40 +27,14 @@ pub struct Trade {
     #[serde(rename = "timestamp")]
     pub exchange_timestamp: i64,
     // pub symbol: String,
-    pub side: Side,
+    #[serde(with = "exchange_side")]
+    pub side: u8,
     pub size: f64,
     pub price: f64,
     // #[serde(skip_deserializing)]
     // trdMatchID: String,
     // #[serde(rename = "trdMatchID")]
     // exchange_id: String,
-}
-
-
-#[derive(Deserialize, Debug, Copy, Clone)]
-pub enum Side {
-    #[serde(rename = "Sell")]
-    Sell,
-    #[serde(rename = "Buy")]
-    Buy,
-}
-
-impl fmt::Display for Side {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self {
-            Side::Sell => write!(f, "s"),
-            Side::Buy => write!(f, "b"),
-        }
-    }
-}
-
-impl Into<u8> for Side {
-    fn into(self) -> u8 {
-        match self {
-            Side::Sell => b's',
-            Side::Buy => b'b',
-        }
-    }
 }
 
 #[derive(Deserialize, Debug)]
@@ -131,5 +105,46 @@ mod exchange_date_format {
         Utc.datetime_from_str(&s, FORMAT)
             .map_err(serde::de::Error::custom)
             .map(|dt| dt.timestamp_nanos())
+    }
+}
+
+mod exchange_side {
+    use serde::{self, Deserialize, Deserializer, Serializer};
+
+    // The signature of a serialize_with function must follow the pattern:
+    //
+    //    fn serialize<S>(&T, S) -> Result<S::Ok, S::Error>
+    //    where
+    //        S: Serializer
+    //
+    // although it may also be generic over the input types T.
+    pub fn serialize<S>(side: u8, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer<Ok = &'static str>,
+    {
+        match side {
+            b's' => serializer.serialize_str("Sell"),
+            b'b' => serializer.serialize_str("Buy"),
+            _ => Err(serde::ser::Error::custom("unknow variant")),
+        }
+    }
+
+    // The signature of a deserialize_with function must follow the pattern:
+    //
+    //    fn deserialize<'de, D>(D) -> Result<T, D::Error>
+    //    where
+    //        D: Deserializer<'de>
+    //
+    // although it may also be generic over the output types T.
+    pub fn deserialize<'de, D>(deserializer: D) -> Result<u8, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        let side = Deserialize::deserialize(deserializer)?;
+        match side {
+            "Sell" => Ok(b's'),
+            "Buy" => Ok(b'b'),
+            _ => Err(serde::de::Error::unknown_variant(side, &["Sell", "Buy"])),
+        }
     }
 }
