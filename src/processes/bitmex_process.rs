@@ -13,6 +13,9 @@ pub async fn bitmex_process() {
     // NOTE(hspadim): I use this because I need to remove the size of the vector,
     // the first value of the byte stream
     const USIZE_LEN: usize = 8;
+    // NOTE(hspadim): 720 KBytes = 72 Bytes (Struct) * 1024 (1K) * 10 (10*1024 = 10_240 items)
+    const MAX_CAPACITY: usize = 10 * 1024 * std::mem::size_of::<QuotesAndTrades>();
+
     let stream = BitmexWebsocket::connect(Args::WithProduct(vec![
         String::from(format!("quote:{}", COIN)),
         String::from(format!("trade:{}", COIN)),
@@ -28,7 +31,7 @@ pub async fn bitmex_process() {
                 // .open("/var/lib/trading-system/quotes-and-trades-extractor/v0.1/data/bitmex.log")
                 .open(format!("bitmex-{}.dat", COIN))
                 .await?;
-            let mut f_write = BufWriter::new(file);
+            let mut f_write = BufWriter::with_capacity(MAX_CAPACITY, file);
             let custom_bincode = bincode::DefaultOptions::new()
                 .with_fixint_encoding()
                 .allow_trailing_bytes();
