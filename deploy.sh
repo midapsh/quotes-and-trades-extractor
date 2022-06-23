@@ -2,6 +2,7 @@
 OPT_PATH="/opt/trading-system"
 pushd ~/Documents/quotes-and-trades-extractor
 git pull
+cargo build --release
 cp -r -u configuration/* $OPT_PATH/exchange-extractor/configuration
 cp -r -u entrypoints/* $OPT_PATH/exchange-extractor/entrypoints
 cp -r -u services/* $OPT_PATH/exchange-extractor/services
