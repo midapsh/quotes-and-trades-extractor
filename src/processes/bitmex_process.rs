@@ -62,9 +62,11 @@ impl<'a> BitmexProcess<'a> {
         .await
         .unwrap();
 
-        while let msg = stream.try_next().await.map_err(|x| {
-            std::io::Error::new(std::io::ErrorKind::Other, format!("error code: {x}"))
-        })? {
+        loop {
+            let msg = stream.try_next().await.map_err(|x| {
+                std::io::Error::new(std::io::ErrorKind::Other, format!("error code: {x}"))
+            })?;
+
             let default_timestamp = get_default_timestamp();
             match msg {
                 Some(tokio_tungstenite::tungstenite::Message::Text(message))
@@ -104,6 +106,5 @@ impl<'a> BitmexProcess<'a> {
                 _other => (),
             }
         }
-        Ok(())
     }
 }
