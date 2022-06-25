@@ -30,7 +30,7 @@ pub async fn bitmex_process() {
             let settings = configuration::get_configuration().unwrap();
             let filepath_quotes = settings
                 .data_quotes_path
-                .join(format!("bitmex-quotes-{}.dat", COIN));
+                .join(format!("bitmex-{}.dat", COIN));
             let file_quotes = OpenOptions::new()
                     .append(true)
                     .create(true)
@@ -42,7 +42,7 @@ pub async fn bitmex_process() {
         
             let filepath_trades = settings
                 .data_trades_path
-                .join(format!("bitmex-trades-{}.dat", COIN));
+                .join(format!("bitmex-{}.dat", COIN));
             let file_trades = OpenOptions::new()
                     .append(true)
                     .create(true)
