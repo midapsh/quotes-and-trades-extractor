@@ -5,6 +5,8 @@ use std::path::PathBuf;
 pub struct Settings {
     pub log_path: PathBuf,
     pub data_path: PathBuf,
+    pub data_quotes_path: PathBuf,
+    pub data_trades_path: PathBuf,
     // Exchanges
     pub binance_coin: ExchangeSettings,
     pub binance_spot: ExchangeSettings,

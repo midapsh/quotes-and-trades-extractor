@@ -4,5 +4,7 @@ production.yaml
 
 data/*
 !data/.gitkeep
+!data/quotes/.gitkeep
+!data/trades/.gitkeep
 log/*
 !log/.gitkeep

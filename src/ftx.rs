@@ -1,6 +1,5 @@
 mod commands;
 mod configs;
-mod custom_deserializers;
 mod custom_parsers;
 mod data_extractors;
 mod processes;

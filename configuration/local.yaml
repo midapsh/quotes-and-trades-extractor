@@ -1,5 +1,7 @@
 log_path: "log/"
 data_path: "data/"
+data_quotes_path: "data/quotes/"
+data_trades_path: "data/trades/"
 binance_coin:
   api_key: ""
   api_secret: ""

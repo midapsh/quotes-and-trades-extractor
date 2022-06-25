@@ -1,7 +1,5 @@
-use std::fmt;
-
 use chrono::Utc;
-use serde::Deserialize;
+use serde::{Serialize, Deserialize};
 
 #[derive(Deserialize, Debug)]
 #[serde(tag = "table")]
@@ -21,16 +19,18 @@ pub struct Trades {
     pub data: Vec<Trade>,
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct Trade {
+    #[serde(default)]
+    pub default_timestamp: i64,
     #[serde(with = "exchange_date_format")]
     #[serde(rename = "timestamp")]
     pub exchange_timestamp: i64,
     // pub symbol: String,
-    #[serde(with = "exchange_side")]
-    pub side: u8,
     pub size: f64,
     pub price: f64,
+    #[serde(with = "exchange_side")]
+    pub side: u8,
     // #[serde(skip_deserializing)]
     // trdMatchID: String,
     // #[serde(rename = "trdMatchID")]
@@ -44,8 +44,10 @@ pub struct Quotes {
     pub data: Vec<Quote>,
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct Quote {
+    #[serde(default)]
+    pub default_timestamp: i64,
     #[serde(with = "exchange_date_format")]
     #[serde(rename = "timestamp")]
     pub exchange_timestamp: i64,
@@ -78,16 +80,17 @@ mod exchange_date_format {
     //        S: Serializer
     //
     // although it may also be generic over the input types T.
-    pub fn serialize<S>(date: i64, serializer: S) -> Result<S::Ok, S::Error>
+    pub fn serialize<S>(date: &i64, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
     {
-        let dt = DateTime::<Utc>::from_utc(
-            NaiveDateTime::from_timestamp(date / A_BILLION, (date % A_BILLION) as u32),
-            Utc,
-        );
-        let s = format!("{}", dt.format(FORMAT));
-        serializer.serialize_str(&s)
+        serializer.serialize_i64(*date)
+        // let dt = DateTime::<Utc>::from_utc(
+        //     NaiveDateTime::from_timestamp(date / A_BILLION, (date % A_BILLION) as u32),
+        //     Utc,
+        // );
+        // let s = format!("{}", dt.format(FORMAT));
+        // serializer.serialize_str(&s)
     }
 
     // The signature of a deserialize_with function must follow the pattern:
@@ -118,15 +121,16 @@ mod exchange_side {
     //        S: Serializer
     //
     // although it may also be generic over the input types T.
-    pub fn serialize<S>(side: u8, serializer: S) -> Result<S::Ok, S::Error>
+    pub fn serialize<'a, S>(side: &u8, serializer: S) -> Result<S::Ok, S::Error>
     where
-        S: Serializer<Ok = &'static str>,
+        S: Serializer,
     {
-        match side {
-            b's' => serializer.serialize_str("Sell"),
-            b'b' => serializer.serialize_str("Buy"),
-            _ => Err(serde::ser::Error::custom("unknow variant")),
-        }
+        serializer.serialize_u8(*side)
+        // match side {
+        //     b's' => serializer.serialize_str("Sell"),
+        //     b'b' => serializer.serialize_str("Buy"),
+        //     _ => Err(serde::ser::Error::custom("unknow variant")),
+        // }
     }
 
     // The signature of a deserialize_with function must follow the pattern:

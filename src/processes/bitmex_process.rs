@@ -5,8 +5,7 @@ use tokio::io::{AsyncWriteExt, BufWriter}; // for write_all()
 
 use crate::commands::bitmex_subscribe::Args;
 use crate::configs::configuration;
-use crate::custom_deserializers::quotes_and_trades_deserializer::QuotesAndTrades;
-use crate::custom_parsers::bitmex_parser::{get_default_timestamp, BitmexParser};
+use crate::custom_parsers::bitmex_parser::{get_default_timestamp, BitmexParser, self};
 use crate::data_extractors::bitmex_websocket::BitmexWebsocket;
 
 pub async fn bitmex_process() {
@@ -14,8 +13,10 @@ pub async fn bitmex_process() {
     // NOTE(hspadim): I use this because I need to remove the size of the vector,
     // the first value of the byte stream
     const USIZE_LEN: usize = 8;
-    // NOTE(hspadim): 720 KBytes = 72 Bytes (Struct) * 1024 (1K) * 10 (10*1024 = 10_240 items)
-    const MAX_CAPACITY: usize = 10 * 1024 * std::mem::size_of::<QuotesAndTrades>();
+    // NOTE(hspadim): 480 KBytes = 48 Bytes (Struct) * 1024 (1K) * 10 (10*1024 = 10_240 items)
+    const MAX_CAPACITY_FOR_QUOTES: usize = 10 * 1024 * std::mem::size_of::<bitmex_parser::Quote>();
+    // NOTE(hspadim): 330 KBytes = 33 Bytes (Struct) * 1024 (1K) * 10 (10*1024 = 10_240 items)
+    const MAX_CAPACITY_FOR_TRADES: usize = 10 * 1024 * std::mem::size_of::<bitmex_parser::Trades>();
 
     let stream = BitmexWebsocket::connect(Args::WithProduct(vec![
         String::from(format!("quote:{}", COIN)),
@@ -23,21 +24,33 @@ pub async fn bitmex_process() {
     ]))
     .await
     .unwrap();
-
+    
     stream
         .try_for_each(|msg| async {
             let settings = configuration::get_configuration().unwrap();
-            let filepath = settings
-                .data_path
-                .join(format!("bitmex-{}.dat", COIN));
-            let file = OpenOptions::new()
-                .append(true)
-                .create(true)
-                // .open("/var/lib/trading-system/quotes-and-trades-extractor/v0.1/data/bitmex.log")
-                // .open(format!("bitmex-{}.dat", COIN))
-                .open(filepath)
-                .await?;
-            let mut f_write = BufWriter::with_capacity(MAX_CAPACITY, file);
+            let filepath_quotes = settings
+                .data_quotes_path
+                .join(format!("bitmex-quotes-{}.dat", COIN));
+            let file_quotes = OpenOptions::new()
+                    .append(true)
+                    .create(true)
+                    // .open("/var/lib/trading-system/quotes-and-trades-extractor/v0.1/data/bitmex.log")
+                    // .open(format!("bitmex-{}.dat", COIN))
+                    .open(filepath_quotes)
+                    .await?;
+            let mut f_write_quotes = BufWriter::with_capacity(MAX_CAPACITY_FOR_QUOTES, file_quotes);
+        
+            let filepath_trades = settings
+                .data_trades_path
+                .join(format!("bitmex-trades-{}.dat", COIN));
+            let file_trades = OpenOptions::new()
+                    .append(true)
+                    .create(true)
+                    // .open("/var/lib/trading-system/quotes-and-trades-extractor/v0.1/data/bitmex.log")
+                    // .open(format!("bitmex-{}.dat", COIN))
+                    .open(filepath_trades)
+                    .await?;
+            let mut f_write_trades = BufWriter::with_capacity(MAX_CAPACITY_FOR_TRADES, file_trades);
             let custom_bincode = bincode::DefaultOptions::new()
                 .with_fixint_encoding()
                 .allow_trailing_bytes();
@@ -50,44 +63,22 @@ pub async fn bitmex_process() {
                     let bitmex_msg: BitmexParser = serde_json::from_str(&message).unwrap();
                     match bitmex_msg {
                         BitmexParser::Quotes(quotes) => {
-                            let quotes = quotes
-                                .data
-                                .iter()
-                                .map(|quote| QuotesAndTrades {
-                                    default_timestamp: default_timestamp,
-                                    exchange_timestamp: quote.exchange_timestamp,
-                                    best_bid_price: quote.best_bid_price,
-                                    best_bid_size: quote.best_bid_size,
-                                    best_ask_price: quote.best_ask_price,
-                                    best_ask_size: quote.best_ask_size,
-                                    side: u8::MIN,
-                                    size: f64::NAN,
-                                    price: f64::NAN,
-                                })
-                                .collect::<Vec<_>>();
+                            let mut quotes = quotes.data;
+                            for quote in &mut quotes {
+                                quote.default_timestamp = default_timestamp;
+                            }
                             let bin_quotes = custom_bincode.serialize(&quotes).unwrap();
-                            f_write.write_all(&bin_quotes[USIZE_LEN..]).await?;
-                            f_write.flush().await?;
+                            f_write_quotes.write_all(&bin_quotes[USIZE_LEN..]).await?;
+                            f_write_quotes.flush().await?;
                         }
                         BitmexParser::Trades(trades) => {
-                            let trades = trades
-                                .data
-                                .iter()
-                                .map(|trade| QuotesAndTrades {
-                                    default_timestamp: default_timestamp,
-                                    exchange_timestamp: trade.exchange_timestamp,
-                                    best_bid_price: f64::NAN,
-                                    best_bid_size: f64::NAN,
-                                    best_ask_price: f64::NAN,
-                                    best_ask_size: f64::NAN,
-                                    side: trade.side,
-                                    size: trade.size,
-                                    price: trade.price,
-                                })
-                                .collect::<Vec<_>>();
+                            let mut trades = trades.data;
+                            for trade in &mut trades {
+                                trade.default_timestamp = default_timestamp;
+                            }
                             let bin_trades = custom_bincode.serialize(&trades).unwrap();
-                            f_write.write_all(&bin_trades[USIZE_LEN..]).await?;
-                            f_write.flush().await?;
+                            f_write_trades.write_all(&bin_trades[USIZE_LEN..]).await?;
+                            f_write_trades.flush().await?;
                         }
                         _ => (),
                     }
