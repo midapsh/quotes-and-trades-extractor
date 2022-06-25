@@ -2,6 +2,8 @@
 OPT_PATH="/opt/trading-system"
 pushd ~/Documents/quotes-and-trades-extractor
 git pull
+# Get Cargo envs to run it 
+source ~/.cargo/env
 cargo build --release --bins
 # Stop everything
 sudo systemctl stop binance-coin-extractor.service
