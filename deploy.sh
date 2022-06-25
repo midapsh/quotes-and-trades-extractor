@@ -2,7 +2,7 @@
 OPT_PATH="/opt/trading-system"
 pushd ~/Documents/quotes-and-trades-extractor
 git pull
-/home/hspadim/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo build --release --bins
+cargo build --release --bins
 # Stop everything
 sudo systemctl stop binance-coin-extractor.service
 sudo systemctl stop binance-spot-extractor.service
