@@ -20,7 +20,7 @@ cp -r -u configuration/* $OPT_PATH/exchange-extractor/configuration
 cp -r -u entrypoints/* $OPT_PATH/exchange-extractor/entrypoints
 cp -r -u services/* $OPT_PATH/exchange-extractor/services
 cp -r -u target/release/* $OPT_PATH/exchange-extractor/bin
-sudo systemctl daemon-reload.service
+sudo systemctl daemon-reload
 # Start everything
 sudo systemctl start binance-coin-extractor.service
 sudo systemctl start binance-spot-extractor.service
