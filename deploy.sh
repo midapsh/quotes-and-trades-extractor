@@ -4,33 +4,33 @@ pushd ~/Documents/quotes-and-trades-extractor
 git pull
 cargo build --release --bins
 # Stop everything
-sudo systemctl stop binance-coin-extractor
-sudo systemctl stop binance-spot-extractor
-sudo systemctl stop binance-stable-extractor
-sudo systemctl stop bitmex-extractor
-sudo systemctl stop bitstamp-extractor
-sudo systemctl stop coinbase-extractor
-sudo systemctl stop deribit-extractor
-sudo systemctl stop ftx-extractor
-sudo systemctl stop kraken-extractor
-sudo systemctl stop kraken-futures-extractor
-sudo systemctl stop okx-extractor
+sudo systemctl stop binance-coin-extractor.service
+sudo systemctl stop binance-spot-extractor.service
+sudo systemctl stop binance-stable-extractor.service
+sudo systemctl stop bitmex-extractor.service
+sudo systemctl stop bitstamp-extractor.service
+sudo systemctl stop coinbase-extractor.service
+sudo systemctl stop deribit-extractor.service
+sudo systemctl stop ftx-extractor.service
+sudo systemctl stop kraken-extractor.service
+sudo systemctl stop kraken-futures-extractor.service
+sudo systemctl stop okx-extractor.service
 
 cp -r -u configuration/* $OPT_PATH/exchange-extractor/configuration
 cp -r -u entrypoints/* $OPT_PATH/exchange-extractor/entrypoints
 cp -r -u services/* $OPT_PATH/exchange-extractor/services
 cp -r -u target/release/* $OPT_PATH/exchange-extractor/bin
-sudo systemctl daemon-reload
+sudo systemctl daemon-reload.service
 # Start everything
-sudo systemctl start binance-coin-extractor
-sudo systemctl start binance-spot-extractor
-sudo systemctl start binance-stable-extractor
-sudo systemctl start bitmex-extractor
-sudo systemctl start bitstamp-extractor
-sudo systemctl start coinbase-extractor
-sudo systemctl start deribit-extractor
-sudo systemctl start ftx-extractor
-sudo systemctl start kraken-extractor
-sudo systemctl start kraken-futures-extractor
-sudo systemctl start okx-extractor
+sudo systemctl start binance-coin-extractor.service
+sudo systemctl start binance-spot-extractor.service
+sudo systemctl start binance-stable-extractor.service
+sudo systemctl start bitmex-extractor.service
+sudo systemctl start bitstamp-extractor.service
+sudo systemctl start coinbase-extractor.service
+sudo systemctl start deribit-extractor.service
+sudo systemctl start ftx-extractor.service
+sudo systemctl start kraken-extractor.service
+sudo systemctl start kraken-futures-extractor.service
+sudo systemctl start okx-extractor.service
 popd
