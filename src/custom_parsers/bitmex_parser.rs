@@ -67,11 +67,11 @@ pub fn get_default_timestamp() -> i64 {
 }
 
 mod exchange_date_format {
-    use chrono::{DateTime, NaiveDateTime, TimeZone, Utc};
+    use chrono::{TimeZone, Utc};
     use serde::{self, Deserialize, Deserializer, Serializer};
 
     const FORMAT: &'static str = "%Y-%m-%dT%H:%M:%S%.3fZ";
-    const A_BILLION: i64 = 1_000_000_000;
+    // const A_BILLION: i64 = 1_000_000_000;
 
     // The signature of a serialize_with function must follow the pattern:
     //
