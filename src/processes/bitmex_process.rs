@@ -1,11 +1,10 @@
-use std::io::Write;
-
 use bincode::config::{AllowTrailing, FixintEncoding, WithOtherIntEncoding, WithOtherTrailing};
 use bincode::{DefaultOptions, Options};
-use futures::{StreamExt, TryStreamExt};
+use futures::TryStreamExt;
+use std::io::Write;
+use std::path::PathBuf;
 
 use crate::commands::bitmex_subscribe::Args;
-use crate::configs::configuration;
 use crate::custom_parsers::bitmex_parser::{get_default_timestamp, BitmexParser};
 use crate::data_extractors::bitmex_websocket::BitmexWebsocket;
 
@@ -13,7 +12,8 @@ type CustomBincode =
     WithOtherTrailing<WithOtherIntEncoding<DefaultOptions, FixintEncoding>, AllowTrailing>;
 
 pub struct BitmexProcess<'a> {
-    coin: &'a str,
+    instrument: &'a str,
+    instrument_parsed: &'a str,
     quotes_appender: tracing_appender::non_blocking::NonBlocking,
     trades_appender: tracing_appender::non_blocking::NonBlocking,
     _quotes_guard: tracing_appender::non_blocking::WorkerGuard,
@@ -22,16 +22,19 @@ pub struct BitmexProcess<'a> {
 }
 
 impl<'a> BitmexProcess<'a> {
-    pub fn new(coin: &'a str) -> Self {
-        let file_name_prefix = format!("bitmex-{}.dat", coin);
-        let settings = configuration::get_configuration().unwrap();
+    pub fn new(
+        instrument: &'a str,
+        instrument_parsed: &'a str,
+        data_quotes_path: &PathBuf,
+        data_trades_path: &PathBuf,
+    ) -> Self {
+        let file_name_prefix = format!("{}.dat", instrument_parsed);
         let quotes_appender =
-            tracing_appender::rolling::daily(settings.data_quotes_path, file_name_prefix.clone());
+            tracing_appender::rolling::daily(data_quotes_path, file_name_prefix.clone());
         let (non_blocking_quotes_appender, _quotes_guard) =
             tracing_appender::non_blocking(quotes_appender);
 
-        let trades_appender =
-            tracing_appender::rolling::daily(settings.data_trades_path, file_name_prefix);
+        let trades_appender = tracing_appender::rolling::daily(data_trades_path, file_name_prefix);
         let (non_blocking_trades_appender, _trades_guard) =
             tracing_appender::non_blocking(trades_appender);
 
@@ -40,7 +43,8 @@ impl<'a> BitmexProcess<'a> {
             .allow_trailing_bytes();
 
         Self {
-            coin,
+            instrument,
+            instrument_parsed,
             custom_bincode,
             quotes_appender: non_blocking_quotes_appender,
             trades_appender: non_blocking_trades_appender,
@@ -56,8 +60,8 @@ impl<'a> BitmexProcess<'a> {
     const USIZE_LEN: usize = 8;
     pub async fn run(&mut self) -> std::io::Result<()> {
         let mut stream = BitmexWebsocket::connect(Args::WithProduct(vec![
-            String::from(format!("quote:{}", self.coin)),
-            String::from(format!("trade:{}", self.coin)),
+            String::from(format!("quote:{}", self.instrument)),
+            String::from(format!("trade:{}", self.instrument)),
         ]))
         .await
         .unwrap();

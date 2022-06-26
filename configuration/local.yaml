@@ -1,7 +1,7 @@
 log_path: "log/"
 data_path: "data/"
-data_quotes_path: "data/quotes/"
-data_trades_path: "data/trades/"
+data_quotes_path: "data/quotes/latest"
+data_trades_path: "data/trades/latest"
 binance_coin:
   api_key: ""
   api_secret: ""
