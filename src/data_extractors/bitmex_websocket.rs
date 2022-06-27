@@ -37,6 +37,8 @@ impl BitmexWebsocket {
         WebSocketStream<tokio_tungstenite::MaybeTlsStream<tokio::net::TcpStream>>,
         tokio_tungstenite::tungstenite::error::Error,
     > {
+        // TODO(hspadim): Add timeout
+        // tokio::time::timeout(std::time::Duration::from_secs(5), connect_async(Self::URL)).await
         let (mut stream, _response) = connect_async(Self::URL).await?;
         println!("WebSocket handshake has been successfully completed");
 
