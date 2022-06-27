@@ -22,89 +22,15 @@ async fn main() -> std::io::Result<()> {
     fs::create_dir_all(&data_trades_path)
         .expect(format!("Couldn't create '{}' trades file", VENUE).as_str());
 
-    // let list_instruments = [("XBTUSD", "XBTUSD"), ("ETHUSD", "ETHUSD")];
-    let list_instruments = [
-        (".BBCH", ".BBCH"),
-        (".BUSDT", ".BUSDT"),
-        (".BLINKT", ".BLINKT"),
-        (".BADAT", ".BADAT"),
-        (".BDOTT", ".BDOTT"),
-        (".BDOGET", ".BDOGET"),
-        (".BSOLT", ".BSOLT"),
-        (".BSUSHIT", ".BSUSHIT"),
-        (".BDOGE", ".BDOGE"),
-        (".BDOT", ".BDOT"),
-        (".BLINK", ".BLINK"),
-        (".BSOL", ".BSOL"),
-        (".BXRPT", ".BXRPT"),
-        (".BBCHT", ".BBCHT"),
-        (".BSHIBT", ".BSHIBT"),
-        ("XRPUSD", "XRPUSD"),
-        ("BCHUSD", "BCHUSD"),
-        ("DOGEUSD", "DOGEUSD"),
-        ("BNBUSD", "BNBUSD"),
-        ("LINKUSD", "LINKUSD"),
-        ("SOLUSD", "SOLUSD"),
-        ("LINKUSDT", "LINKUSDT"),
-        ("DOGEUSDT", "DOGEUSDT"),
-        ("DOTUSDT", "DOTUSDT"),
-        ("ADAUSDT", "ADAUSDT"),
-        ("BNBUSDT", "BNBUSDT"),
-        ("SOLUSDT", "SOLUSDT"),
-        ("ADAUSD", "ADAUSD"),
-        ("XRPUSDT", "XRPUSDT"),
-        ("BCHUSDT", "BCHUSDT"),
-        ("DOTUSD", "DOTUSD"),
-        ("AVAXUSD", "AVAXUSD"),
-        ("SHIBUSDT", "SHIBUSDT"),
-        ("AVAXUSDT", "AVAXUSDT"),
-        ("UNI_USDT", "UNI_USDT"),
-        ("LINK_USDT", "LINK_USDT"),
-        (".BXBT", ".BXBT"),
-        (".BVOL", ".BVOL"),
-        (".BVOL24H", ".BVOL24H"),
-        (".BVOL7D", ".BVOL7D"),
-        (".BETH", ".BETH"),
-        (".BETHT", ".BETHT"),
-        (".BLTC", ".BLTC"),
-        (".BLTCT", ".BLTCT"),
-        ("XBTUSD", "XBTUSD"),
-        ("XBTUSDT", "XBTUSDT"),
-        ("ETHUSD", "ETHUSD"),
-        ("ETHUSDT", "ETHUSDT"),
-        ("ETH_USDT", "ETH_USDT"),
-        ("LTCUSD", "LTCUSD"),
-        ("LTCUSDT", "LTCUSDT"),
-        ("ADAU22", "ADAU22"),
-        ("XRPU22", "XRPU22"),
-        ("ETHU22", "ETHU22"),
-    ];
-    // let instrument = "XBTUSD";
-    // let instrument_parsed = "XBTUSD";
+    let instrument = "XBTUSD";
+    let instrument_parsed = "XBTUSD";
 
-    // let mut bitmex_process = BitmexProcess::new(
-    //     instrument,
-    //     instrument_parsed,
-    //     &data_quotes_path,
-    //     &data_trades_path,
-    // );
-    // bitmex_process.run().await?;
-
-    let mut objs: Vec<_> = list_instruments
-        .map(|(instrument, instrument_parsed)| {
-            let bitmex_process = BitmexProcess::new(
-                instrument,
-                instrument_parsed,
-                &data_quotes_path,
-                &data_trades_path,
-            );
-            bitmex_process
-        })
-        .into();
-
-    let futures = objs.iter_mut().map(|bitmex_process| bitmex_process.run());
-
-    futures::future::try_join_all(futures).await?;
-
+    let mut bitmex_process = BitmexProcess::new(
+        instrument,
+        instrument_parsed,
+        &data_quotes_path,
+        &data_trades_path,
+    );
+    bitmex_process.run().await?;
     Ok(())
 }
