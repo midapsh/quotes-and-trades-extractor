@@ -3,6 +3,7 @@ mod configs;
 mod custom_parsers;
 mod data_extractors;
 mod processes;
+mod models;
 
 
 use processes::binance_stable_process::binance_stable_process;

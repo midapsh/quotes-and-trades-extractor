@@ -16,17 +16,17 @@ pub enum BitmexParser {
 pub struct Trades {
     // #[serde(skip_deserializing)]
     // action: String,
-    pub data: Vec<Trade>,
+    pub data: Vec<ParsedTrade>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-pub struct Trade {
+pub struct ParsedTrade {
     #[serde(default)]
     pub default_timestamp: i64,
     #[serde(with = "exchange_date_format")]
     #[serde(rename = "timestamp")]
     pub exchange_timestamp: i64,
-    // pub symbol: String,
+    pub symbol: String,
     pub size: f64,
     pub price: f64,
     #[serde(with = "exchange_side")]
@@ -41,17 +41,17 @@ pub struct Trade {
 pub struct Quotes {
     // #[serde(skip_deserializing)]
     // action: String,
-    pub data: Vec<Quote>,
+    pub data: Vec<ParsedQuote>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-pub struct Quote {
+pub struct ParsedQuote {
     #[serde(default)]
     pub default_timestamp: i64,
     #[serde(with = "exchange_date_format")]
     #[serde(rename = "timestamp")]
     pub exchange_timestamp: i64,
-    // pub symbol: String,
+    pub symbol: String,
     #[serde(rename = "bidPrice")]
     pub best_bid_price: f64,
     #[serde(rename = "bidSize")]
