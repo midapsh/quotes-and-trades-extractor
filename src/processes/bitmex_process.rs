@@ -15,13 +15,13 @@ type CustomBincode =
 
 pub struct QuotesTriple {
     appender: tracing_appender::non_blocking::NonBlocking,
-    guard: tracing_appender::non_blocking::WorkerGuard,
+    _guard: tracing_appender::non_blocking::WorkerGuard,
     quotes: Vec<Quote>,
 }
 
 pub struct TradesTriple {
     appender: tracing_appender::non_blocking::NonBlocking,
-    guard: tracing_appender::non_blocking::WorkerGuard,
+    _guard: tracing_appender::non_blocking::WorkerGuard,
     trades: Vec<Trade>,
 }
 
@@ -59,7 +59,7 @@ impl<'a> BitmexProcess<'a> {
                 instrument,
                 QuotesTriple {
                     appender: non_blocking_quotes_appender,
-                    guard: _quotes_guard,
+                    _guard: _quotes_guard,
                     quotes: Vec::with_capacity(4096),
                 },
             );
@@ -67,7 +67,7 @@ impl<'a> BitmexProcess<'a> {
                 instrument,
                 TradesTriple {
                     appender: non_blocking_trades_appender,
-                    guard: _trades_guard,
+                    _guard: _trades_guard,
                     trades: Vec::with_capacity(4096),
                 },
             );
@@ -137,7 +137,7 @@ impl<'a> BitmexProcess<'a> {
                                     .push(quote);
                             }
                             
-                            for (_, QuotesTriple { appender, quotes, guard: _ }) in self.quotes_process_dict.iter_mut() {
+                            for (_, QuotesTriple { appender, quotes, _guard: _ }) in self.quotes_process_dict.iter_mut() {
                                 if !quotes.is_empty() {
                                     // NOTE(hspadim): I want to fail hard when I don't find the key
                                     // because it's suposed to have all symbols inside of it.
@@ -167,13 +167,13 @@ impl<'a> BitmexProcess<'a> {
                                     .push(trade);
                             }
                             
-                            for (_, TradesTriple { appender, trades, guard: _ }) in self.trades_process_dict.iter_mut() {
+                            for (_, TradesTriple { appender, trades, _guard: _ }) in self.trades_process_dict.iter_mut() {
                                 if !trades.is_empty() {
                                     // NOTE(hspadim): I want to fail hard when I don't find the key
                                     // because it's suposed to have all symbols inside of it.
-                                    let bin_quotes = self.custom_bincode.serialize(&trades).unwrap();
+                                    let bin_trades = self.custom_bincode.serialize(&trades).unwrap();
 
-                                    appender.write_all(&bin_quotes[Self::USIZE_LEN..])?;
+                                    appender.write_all(&bin_trades[Self::USIZE_LEN..])?;
                                     appender.flush()?;
                                     trades.clear();
                                 }
