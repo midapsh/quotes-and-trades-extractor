@@ -74,9 +74,9 @@ async fn main() -> std::io::Result<()> {
         ("ETH_USDT", "ETH_USDT"),
         ("LTCUSD", "LTCUSD"),
         ("LTCUSDT", "LTCUSDT"),
-        ("ADAU22", "ADAU22"),
-        ("XRPU22", "XRPU22"),
-        ("ETHU22", "ETHU22"),
+        // ("ADAU22", "ADAU22"),
+        // ("XRPU22", "XRPU22"),
+        // ("ETHU22", "ETHU22"),
     ];
 
     let mut objs: Vec<_> = list_instruments
