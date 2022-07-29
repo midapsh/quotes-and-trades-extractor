@@ -1,5 +1,5 @@
 use chrono::Utc;
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize, Debug)]
 #[serde(tag = "table")]
@@ -26,7 +26,7 @@ pub struct ParsedTrade {
     #[serde(with = "exchange_date_format")]
     #[serde(rename = "timestamp")]
     pub exchange_timestamp: i64,
-    pub symbol: String,
+    // pub symbol: String,
     pub size: f64,
     pub price: f64,
     #[serde(with = "exchange_side")]
@@ -51,7 +51,7 @@ pub struct ParsedQuote {
     #[serde(with = "exchange_date_format")]
     #[serde(rename = "timestamp")]
     pub exchange_timestamp: i64,
-    pub symbol: String,
+    // pub symbol: String,
     #[serde(rename = "bidPrice")]
     pub best_bid_price: f64,
     #[serde(rename = "bidSize")]

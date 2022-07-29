@@ -38,14 +38,40 @@ impl BitmexWebsocket {
         tokio_tungstenite::tungstenite::error::Error,
     > {
         // TODO(hspadim): Add timeout
-        // tokio::time::timeout(std::time::Duration::from_secs(5), connect_async(Self::URL)).await
-        let (mut stream, _response) = connect_async(Self::URL).await?;
-        println!("WebSocket handshake has been successfully completed");
+        let (mut stream, _response) =
+            match tokio::time::timeout(std::time::Duration::from_secs(5), connect_async(Self::URL))
+                .await
+            {
+                Ok(it) => it?,
+                Err(_) => {
+                    return Err(tokio_tungstenite::tungstenite::Error::Io(
+                        std::io::Error::new(
+                            std::io::ErrorKind::BrokenPipe,
+                            "Timeout when trying to connect",
+                        ),
+                    ));
+                }
+            };
+        println!("WebSocket handshake has been successfully completed: {:?}", subscribe.args);
 
         let subscribe = serde_json::to_string(&subscribe).unwrap();
-        stream.send(TMessage::Text(subscribe)).await?;
-        println!("subscription sent");
 
-        Ok(stream)
+        match tokio::time::timeout(
+            std::time::Duration::from_secs(5),
+            stream.send(TMessage::Text(subscribe)),
+        )
+        .await
+        {
+            Ok(it) => it.and_then(|_| {
+                println!("subscription sent!");
+                Ok(stream)
+            }),
+            Err(_) => Err(tokio_tungstenite::tungstenite::Error::Io(
+                std::io::Error::new(
+                    std::io::ErrorKind::BrokenPipe,
+                    "Timeout when trying to subscribe",
+                ),
+            )),
+        }
     }
 }
