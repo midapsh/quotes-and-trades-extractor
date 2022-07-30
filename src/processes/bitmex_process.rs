@@ -159,6 +159,7 @@ impl<'a> BitmexProcess<'a> {
                 .await
                 {
                     has_timed_out = true;
+                    continue;
                 } else {
                     println!("Couldn't send 'ping' message - {}", self.instrument);
                     return Err(std::io::Error::new(
@@ -166,7 +167,6 @@ impl<'a> BitmexProcess<'a> {
                         "Couldn't send 'ping' message",
                     ));
                 }
-                continue;
             };
             match msg {
                 Some(tokio_tungstenite::tungstenite::Message::Text(message))
