@@ -124,7 +124,7 @@ impl<'a> BitmexProcess<'a> {
         {
             Ok(_) => (),
             Err(_) => {
-                println!("Couldn't send 'ping' message");
+                println!("Couldn't send 'ping' message - {}", self.instrument);
                 return Err(std::io::Error::new(
                     std::io::ErrorKind::BrokenPipe,
                     "Couldn't send 'ping' message",
@@ -146,7 +146,7 @@ impl<'a> BitmexProcess<'a> {
                 )
             } else {
                 if has_timed_out {
-                    println!("Couldn't send 'ping' message");
+                    println!("Couldn't send 'ping' message - {}", self.instrument);
                     return Err(std::io::Error::new(
                         std::io::ErrorKind::BrokenPipe,
                         "Couldn't send 'ping' message",
@@ -160,7 +160,7 @@ impl<'a> BitmexProcess<'a> {
                 {
                     has_timed_out = true;
                 } else {
-                    println!("Couldn't send 'ping' message");
+                    println!("Couldn't send 'ping' message - {}", self.instrument);
                     return Err(std::io::Error::new(
                         std::io::ErrorKind::BrokenPipe,
                         "Couldn't send 'ping' message",
@@ -233,7 +233,7 @@ impl<'a> BitmexProcess<'a> {
                 // tokio_tungstenite::tungstenite::Message::Binary(_) => todo!(),
                 // tokio_tungstenite::tungstenite::Message::Ping(_) => todo!(),
                 // tokio_tungstenite::tungstenite::Message::Close(_) => todo!(),
-                other => println!("{:?}", other),
+                other => println!("{} - {:?}", self._instrument_parsed, other),
             }
             has_timed_out = false;
         }
