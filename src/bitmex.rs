@@ -96,6 +96,4 @@ async fn main() -> std::io::Result<()> {
 
         futures::future::try_join_all(futures).await?;
     }
-
-    Ok(())
 }

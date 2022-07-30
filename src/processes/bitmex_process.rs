@@ -89,15 +89,15 @@ impl<'a> BitmexProcess<'a> {
         ];
 
         loop {
-            let stream = match BitmexWebsocket::connect(Args::WithProduct(subscription.to_vec()))
-                            .await {
-                Ok(it) => it,
-                Err(err) => {
-                    // TODO(hspadim): Should try to connect to another symbol
-                    eprintln!("{}", err);
-                    return Ok(());
-                },
-            };
+            let stream =
+                match BitmexWebsocket::connect(Args::WithProduct(subscription.to_vec())).await {
+                    Ok(it) => it,
+                    Err(err) => {
+                        // TODO(hspadim): Should try to connect to another symbol
+                        eprintln!("{}", err);
+                        return Ok(());
+                    }
+                };
 
             match self.stream_loop(stream).await {
                 Ok(()) => {
@@ -124,6 +124,7 @@ impl<'a> BitmexProcess<'a> {
         {
             Ok(_) => (),
             Err(_) => {
+                println!("Couldn't send 'ping' message");
                 return Err(std::io::Error::new(
                     std::io::ErrorKind::BrokenPipe,
                     "Couldn't send 'ping' message",
@@ -131,50 +132,42 @@ impl<'a> BitmexProcess<'a> {
             }
         }
 
-        let mut has_timed_out = false;
+        let mut has_timed_out: bool = false;
         loop {
-            let (default_timestamp, msg) =
-                match tokio::time::timeout(std::time::Duration::from_secs(5), stream.try_next())
-                    .await
+            let (default_timestamp, msg) = if let Ok(msg) =
+                tokio::time::timeout(std::time::Duration::from_secs(5), stream.try_next()).await
+            {
+                let default_timestamp = get_default_timestamp();
+                (
+                    default_timestamp,
+                    msg.map_err(|x| {
+                        std::io::Error::new(std::io::ErrorKind::Other, format!("error code: {x}"))
+                    })?,
+                )
+            } else {
+                if has_timed_out {
+                    println!("Couldn't send 'ping' message");
+                    return Err(std::io::Error::new(
+                        std::io::ErrorKind::BrokenPipe,
+                        "Couldn't send 'ping' message",
+                    ));
+                }
+                if let Ok(_) = tokio::time::timeout(
+                    std::time::Duration::from_secs(5),
+                    stream.send(tokio_tungstenite::tungstenite::Message::Ping(vec![0x9])), // Raw Ping Frame
+                )
+                .await
                 {
-                    Ok(msg) => {
-                        let default_timestamp = get_default_timestamp();
-                        has_timed_out = false;
-
-                        (
-                            default_timestamp,
-                            msg.map_err(|x| {
-                                std::io::Error::new(
-                                    std::io::ErrorKind::Other,
-                                    format!("error code: {x}"),
-                                )
-                            })?,
-                        )
-                    }
-                    Err(_) => {
-                        if has_timed_out {
-                            return Err(std::io::Error::new(
-                                std::io::ErrorKind::BrokenPipe,
-                                "Couldn't send 'ping' message",
-                            ));
-                        }
-                        match tokio::time::timeout(
-                            std::time::Duration::from_secs(5),
-                            stream.send(tokio_tungstenite::tungstenite::Message::Ping(vec![0x9])), // Raw Ping Frame
-                        )
-                        .await
-                        {
-                            Ok(_) => has_timed_out = true,
-                            Err(_) => {
-                                return Err(std::io::Error::new(
-                                    std::io::ErrorKind::BrokenPipe,
-                                    "Couldn't send 'ping' message",
-                                ));
-                            }
-                        }
-                        continue;
-                    }
-                };
+                    has_timed_out = true;
+                } else {
+                    println!("Couldn't send 'ping' message");
+                    return Err(std::io::Error::new(
+                        std::io::ErrorKind::BrokenPipe,
+                        "Couldn't send 'ping' message",
+                    ));
+                }
+                continue;
+            };
             match msg {
                 Some(tokio_tungstenite::tungstenite::Message::Text(message))
                     if message.find("table").is_some() =>
@@ -240,7 +233,7 @@ impl<'a> BitmexProcess<'a> {
                 // tokio_tungstenite::tungstenite::Message::Binary(_) => todo!(),
                 // tokio_tungstenite::tungstenite::Message::Ping(_) => todo!(),
                 // tokio_tungstenite::tungstenite::Message::Close(_) => todo!(),
-                _other => (),
+                other => println!("{:?}", other),
             }
             has_timed_out = false;
         }
