@@ -233,7 +233,24 @@ impl<'a> BitmexProcess<'a> {
                 // tokio_tungstenite::tungstenite::Message::Binary(_) => todo!(),
                 // tokio_tungstenite::tungstenite::Message::Ping(_) => todo!(),
                 // tokio_tungstenite::tungstenite::Message::Close(_) => todo!(),
-                other => println!("{} - {:?}", self._instrument_parsed, other),
+                Some(tokio_tungstenite::tungstenite::Message::Pong(_)) => {
+                    println!("{} - pong", self._instrument_parsed)
+                }
+                None => {
+                    return Err(std::io::Error::new(
+                        std::io::ErrorKind::InvalidData,
+                        format!(
+                            "Couldn't receive any message. Reconnecting {}",
+                            self._instrument_parsed
+                        ),
+                    ));
+                }
+                other => {
+                    println!(
+                        "Not parsed message from {} - {:?}",
+                        self._instrument_parsed, other
+                    )
+                }
             }
             has_timed_out = false;
         }
