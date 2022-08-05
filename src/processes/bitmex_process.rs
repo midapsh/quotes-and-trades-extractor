@@ -1,10 +1,9 @@
 use bincode::config::{AllowTrailing, FixintEncoding, WithOtherIntEncoding, WithOtherTrailing};
 use bincode::{DefaultOptions, Options};
 use futures::{SinkExt, TryStreamExt};
-use std::collections::HashMap;
 use std::io::Write;
 use std::path::PathBuf;
-use tokio::time::{sleep, Instant};
+use tokio::time::{sleep, self};
 
 use crate::commands::bitmex_subscribe::Args;
 use crate::custom_parsers::bitmex_parser::{
@@ -95,7 +94,8 @@ impl<'a> BitmexProcess<'a> {
                     Err(err) => {
                         // TODO(hspadim): Should try to connect to another symbol
                         eprintln!("{}", err);
-                        return Ok(());
+                        time::sleep(time::Duration::from_secs(60)).await;
+                        continue;
                     }
                 };
 
