@@ -6,53 +6,8 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [[bin]]
-name = "coinbase"
-path = "src/coinbase.rs"
-
-[[bin]]
 name = "bitmex"
 path = "src/bitmex.rs"
-
-[[bin]]
-name = "bitmex_weird"
-path = "src/bitmex_weird.rs"
-
-[[bin]]
-name = "deribit"
-path = "src/deribit.rs"
-
-[[bin]]
-name = "ftx"
-path = "src/ftx.rs"
-
-[[bin]]
-name = "kraken"
-path = "src/kraken.rs"
-
-[[bin]]
-name = "binance_spot"
-path = "src/binance_spot.rs"
-
-[[bin]]
-name = "binance_stable"
-path = "src/binance_stable.rs"
-
-[[bin]]
-name = "binance_coin"
-path = "src/binance_coin.rs"
-
-[[bin]]
-name = "okx"
-path = "src/okx.rs"
-
-[[bin]]
-name = "bitstamp"
-path = "src/bitstamp.rs"
-
-[[bin]]
-name = "kraken_futures"
-path = "src/kraken_futures.rs"
-
 
 [dependencies]
 tokio = { version = "1.0", features = ["rt-multi-thread", "macros", "sync", "time", "fs"] }

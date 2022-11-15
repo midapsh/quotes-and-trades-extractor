@@ -5,11 +5,12 @@ use crate::utils::instrument_info::InstrumentInfo;
 use crate::utils::path_info::PathInfo;
 
 #[async_trait]
-pub trait Worker<'a> {
+pub trait Worker: Send {
     fn new(
-        cancelation_token: CancellationToken,
-        instrument_info: InstrumentInfo<'a>,
-        path_info: PathInfo<'a>,
+        cancellation_token: CancellationToken,
+        instrument_info: InstrumentInfo,
+        path_info: PathInfo,
     ) -> Self;
-    pub async fn execute(self);
+    async fn execute(&mut self) -> std::io::Result<()>;
+    fn stop(&self);
 }

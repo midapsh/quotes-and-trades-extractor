@@ -8,8 +8,8 @@ pub enum BitmexParser {
     Trades(Trades),
     #[serde(rename = "quote")]
     Quotes(Quotes),
-    #[serde(skip)]
-    WithOther(String),
+    // #[serde(skip)]
+    // WithOther(String),
 }
 
 #[derive(Deserialize, Debug)]

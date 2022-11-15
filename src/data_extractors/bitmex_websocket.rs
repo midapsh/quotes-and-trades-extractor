@@ -13,10 +13,9 @@ pub struct BitmexWebsocket;
 use crate::commands::bitmex_subscribe::{Args, Subscribe, SubscribeCmd};
 
 impl BitmexWebsocket {
-    const URL: &'static str = "wss://www.bitmex.com/realtime";
-
     /// Constructor for simple subcription with product_ids and args
     pub async fn connect(
+        url: &str,
         args: Args,
     ) -> core::result::Result<
         WebSocketStream<tokio_tungstenite::MaybeTlsStream<tokio::net::TcpStream>>,
@@ -27,11 +26,12 @@ impl BitmexWebsocket {
             args: args,
         };
 
-        Self::connect_with_sub(subscribe).await
+        Self::connect_with_sub(url, subscribe).await
     }
 
     /// Constructor for extended subcription via Subscribe structure
     pub async fn connect_with_sub(
+        url: &str,
         subscribe: Subscribe,
     ) -> core::result::Result<
         WebSocketStream<tokio_tungstenite::MaybeTlsStream<tokio::net::TcpStream>>,
@@ -39,7 +39,7 @@ impl BitmexWebsocket {
     > {
         // TODO(hspadim): Add timeout
         let (mut stream, _response) =
-            match tokio::time::timeout(std::time::Duration::from_secs(5), connect_async(Self::URL))
+            match tokio::time::timeout(std::time::Duration::from_secs(5), connect_async(url))
                 .await
             {
                 Ok(it) => it?,
