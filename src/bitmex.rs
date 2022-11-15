@@ -4,11 +4,14 @@ mod custom_parsers;
 mod data_extractors;
 mod models;
 mod processes;
+mod worker_manager;
+mod utils;
 
 use std::fs;
 
 use crate::configs::configuration::get_configuration;
 use processes::bitmex_process::BitmexProcess;
+use worker_manager::WorkerManager;
 
 #[tokio::main]
 async fn main() -> std::io::Result<()> {
