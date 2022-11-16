@@ -1,0 +1,29 @@
+{
+  "db": "PostgreSQL",
+  "43a3916d2bdce59b5a3c7f5caf8a04eef70f7ad703342658dc961b65870f250b": {
+    "describe": {
+      "columns": [
+        {
+          "name": "instrument",
+          "ordinal": 0,
+          "type_info": "Varchar"
+        },
+        {
+          "name": "instrument_parsed",
+          "ordinal": 1,
+          "type_info": "Varchar"
+        }
+      ],
+      "nullable": [
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Text"
+        ]
+      }
+    },
+    "query": "SELECT instrument, instrument_parsed FROM instruments WHERE exchange = $1;"
+  }
+}

@@ -4,6 +4,7 @@ use std::fs;
 // use async_trait::async_trait;
 use tokio::time::{interval_at, Duration, Instant};
 use tokio_util::sync::CancellationToken;
+use sqlx::postgres::{PgPool, PgPoolOptions};
 
 use crate::configs::configuration::get_configuration;
 use crate::utils::instrument_info::InstrumentInfo;
@@ -13,8 +14,10 @@ use crate::workers::base_worker::Worker;
 pub struct WorkerManager<TWorker: Worker> {
     // NOTE(hspadim): Init vars
     update_time: u64,
-    _venue: String,
+    venue: String,
     path_info: PathInfo,
+    // NOTE(hspadim): Data base
+    pg_pool: PgPool,
     // NOTE(hspadim): Internal data
     instruments: BTreeSet<InstrumentInfo>,
     // workers: BTreeMap<InstrumentInfo, TWorker>,
@@ -39,12 +42,24 @@ impl<TWorker: Worker> WorkerManager<TWorker> {
             data_quotes_path,
             data_trades_path,
         };
+        // DataBase
+                
+        let conn_str = std::env::var("DATABASE_URL")
+            .unwrap_or_else(|_| "postgres://postgres:postgres@localhost:5432/postgres".to_string());
+
+        let pg_pool = PgPoolOptions::new()
+            .max_connections(1)
+            .connect_lazy(&conn_str)
+            .unwrap();
         //
+
         Self {
             // NOTE(hspadim): Init vars
             update_time,
-            _venue: venue,
+            venue,
             path_info,
+            // NOTE(hspadim): Data base
+            pg_pool,
             // NOTE(hspadim): Internal data
             instruments: BTreeSet::new(),
             workers_tokens: BTreeMap::new(),
@@ -53,68 +68,21 @@ impl<TWorker: Worker> WorkerManager<TWorker> {
     }
 
     async fn get_instruments_from_db(&mut self) -> BTreeSet<InstrumentInfo> {
-        let list_instruments: BTreeSet<InstrumentInfo> = [
-            // (".BBCH", ".BBCH"),
-            // (".BUSDT", ".BUSDT"),
-            // (".BLINKT", ".BLINKT"),
-            // (".BADAT", ".BADAT"),
-            // (".BDOTT", ".BDOTT"),
-            // (".BDOGET", ".BDOGET"),
-            // (".BSOLT", ".BSOLT"),
-            // (".BSUSHIT", ".BSUSHIT"),
-            // (".BDOGE", ".BDOGE"),
-            // (".BDOT", ".BDOT"),
-            // (".BLINK", ".BLINK"),
-            // (".BSOL", ".BSOL"),
-            // (".BXRPT", ".BXRPT"),
-            // (".BBCHT", ".BBCHT"),
-            // (".BSHIBT", ".BSHIBT"),
-            ("XRPUSD", "XRPUSD"),
-            ("BCHUSD", "BCHUSD"),
-            ("DOGEUSD", "DOGEUSD"),
-            ("BNBUSD", "BNBUSD"),
-            ("LINKUSD", "LINKUSD"),
-            ("SOLUSD", "SOLUSD"),
-            ("LINKUSDT", "LINKUSDT"),
-            ("DOGEUSDT", "DOGEUSDT"),
-            ("DOTUSDT", "DOTUSDT"),
-            ("ADAUSDT", "ADAUSDT"),
-            ("BNBUSDT", "BNBUSDT"),
-            ("SOLUSDT", "SOLUSDT"),
-            ("ADAUSD", "ADAUSD"),
-            ("XRPUSDT", "XRPUSDT"),
-            ("BCHUSDT", "BCHUSDT"),
-            ("DOTUSD", "DOTUSD"),
-            ("AVAXUSD", "AVAXUSD"),
-            ("SHIBUSDT", "SHIBUSDT"),
-            ("AVAXUSDT", "AVAXUSDT"),
-            ("UNI_USDT", "UNI_USDT"),
-            ("LINK_USDT", "LINK_USDT"),
-            // (".BXBT", ".BXBT"),
-            // (".BVOL", ".BVOL"),
-            // (".BVOL24H", ".BVOL24H"),
-            // (".BVOL7D", ".BVOL7D"),
-            // (".BETH", ".BETH"),
-            // (".BETHT", ".BETHT"),
-            // (".BLTC", ".BLTC"),
-            // (".BLTCT", ".BLTCT"),
-            ("XBTUSD", "XBTUSD"),
-            ("XBTUSDT", "XBTUSDT"),
-            ("ETHUSD", "ETHUSD"),
-            ("ETHUSDT", "ETHUSDT"),
-            ("ETH_USDT", "ETH_USDT"),
-            ("LTCUSD", "LTCUSD"),
-            ("LTCUSDT", "LTCUSDT"),
-            // ("ADAU22", "ADAU22"),
-            // ("XRPU22", "XRPU22"),
-            // ("ETHU22", "ETHU22"),
-        ]
-        .iter()
-        .map(|&(instrument, instrument_parsed)| {
-            InstrumentInfo::new(instrument.to_string(), instrument_parsed.to_string())
-        })
-        .collect();
-        list_instruments
+        // TODO(hspadim): Add log here
+        let mut tx = self.pg_pool.begin().await.unwrap();
+        let instruments_infos: BTreeSet<InstrumentInfo> = sqlx::query!(
+                "SELECT instrument, instrument_parsed FROM instruments WHERE exchange = $1;",
+                self.venue,
+            )
+            .fetch_all(&mut tx)
+            .await
+            .unwrap()
+            .into_iter()
+            .map(|record| {
+                InstrumentInfo::new(record.instrument, record.instrument_parsed)
+            })
+            .collect();
+        instruments_infos
     }
 
     async fn refresh_instruments(&mut self) {
