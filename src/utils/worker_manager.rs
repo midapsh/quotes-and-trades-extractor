@@ -110,17 +110,19 @@ impl<TWorker: Worker> WorkerManager<TWorker> {
                 // try to init it again
                 if !instruments_to_be_removed.contains(&instrument_info) {
                     instruments_to_be_added.insert(instrument_info.clone());
+                    println!("Adding worker that stopped: {:?}", instrument_info);
                 }
             }
         }
 
         // NOTE(hspadim): Remove instruments that don't exist anymore in the database
-        for instrument in instruments_to_be_removed.iter() {
-            let worker_token = &self.workers_tokens[instrument];
+        for instrument_info in instruments_to_be_removed.iter() {
+            let worker_token = &self.workers_tokens[instrument_info];
             if !worker_token.is_cancelled() {
-                self.workers_tokens[instrument].cancel();
+                worker_token.cancel();
+                println!("Worker removed: {:?}", instrument_info);
             }
-            self.workers_tokens.remove(instrument);
+            self.workers_tokens.remove(instrument_info);
         }
 
         // NOTE(hspadim): Add new instruments
@@ -132,14 +134,16 @@ impl<TWorker: Worker> WorkerManager<TWorker> {
             let path_info = self.path_info.clone();
 
             let cloned_cancellation_token = cancellation_token.clone();
+            println!("Adding worker: {:?}", instrument_info);
             tokio::spawn(async move {
                 let mut worker =
-                    TWorker::new(cloned_cancellation_token, instrument_info, path_info);
+                    TWorker::new(cloned_cancellation_token, instrument_info.clone(), path_info);
                 match worker.execute().await {
                     _ => {
                         worker.stop();
                     }
                 }
+                println!("I'm dead: {:?}", instrument_info);
             });
         }
 
